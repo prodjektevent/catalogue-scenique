@@ -6,7 +6,9 @@ body{
 }
 #details-view {
   overflow-y: auto;
-  max-height: 80vh;
+  -webkit-overflow-scrolling: touch;
+  max-height: 100vh;
+  height: 100vh;
 }
 body.no-scroll {
   overflow: hidden;
