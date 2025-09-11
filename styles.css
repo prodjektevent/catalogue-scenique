@@ -9,6 +9,14 @@ body{
   -webkit-overflow-scrolling: touch;
   max-height: 100vh;
   height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  z-index: 9999;
+  background: white;
+  border-radius: 0;
+  padding: 1rem;
 }
 body.no-scroll {
   overflow: hidden;
