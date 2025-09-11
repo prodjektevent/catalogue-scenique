@@ -1,0 +1,13 @@
+body{
+  padding: 25px;
+}
+.title {
+	color: #5C6AC4;
+}
+#details-view {
+  overflow-y: auto;
+  max-height: 80vh;
+}
+body.no-scroll {
+  overflow: hidden;
+}
