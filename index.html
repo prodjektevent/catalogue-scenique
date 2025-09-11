@@ -350,20 +350,20 @@ body.no-scroll {
             if (product.options) specsHtml += `<li><strong>Options :</strong> ${product.options}</li>`;
             
             detailsView.innerHTML = `
-                <div class="flex justify-between items-start fade-in">
-                    <h3 class="text-2xl font-bold mb-4">${product.name}</h3>
-                    <button id="close-details" class="text-2xl text-gray-500 hover:text-gray-800">&times;</button>
-                </div>
-                <div class="grid md:grid-cols-2 gap-8">
-                    <img src="${product.imageUrl}" alt="${product.name}" class="w-full h-64 object-cover rounded-lg">
-                    <div>
-                        <p class="text-gray-600 mb-4">${product.description}</p>
-                        <ul class="space-y-2 text-gray-700 list-disc list-inside bg-gray-50 p-4 rounded-lg">
-                            ${specsHtml}
-                        </ul>
-                    </div>
-                </div>
-            `;
+    <div class="flex justify-between items-start fade-in">
+        <h3 class="text-2xl font-bold mb-4">${product.name}</h3>
+        <button id="close-details" class="text-2xl text-gray-500 hover:text-gray-800">&times;</button>
+    </div>
+    <div class="grid md:grid-cols-2 gap-8">
+        <img src="${product.imageUrl}" alt="${product.name}" class="w-full max-h-[50vh] object-contain rounded-lg mx-auto">
+        <div>
+            <p class="text-gray-600 mb-4">${product.description}</p>
+            <ul class="space-y-2 text-gray-700 list-disc list-inside bg-gray-50 p-4 rounded-lg">
+                ${specsHtml}
+            </ul>
+        </div>
+    </div>
+`;
             detailsView.classList.remove('hidden');
             document.body.classList.add('no-scroll');
             detailsView.scrollIntoView({ behavior: 'smooth', block: 'center' });
