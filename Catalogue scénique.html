@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalogue Scénique Interactif - PRODJEKT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: J'ai conçu une application de type tableau de bord interactif. L'utilisateur arrive sur une vue d'ensemble et peut immédiatement utiliser des filtres par catégorie (Grande Scène, Arc-Roof, etc.) pour affiner sa recherche. Cliquer sur un produit met à jour une section de détails dédiée sans recharger la page, rendant l'exploration fluide. Un graphique comparatif interactif a été ajouté pour permettre aux utilisateurs de visualiser et comparer les spécifications clés (surface, charge) des différentes structures. Cette structure a été choisie pour transformer un catalogue passif en un outil d'aide à la décision actif, centré sur les besoins de l'utilisateur qui cherche une solution technique précise. -->
+    <!-- Visualization & Content Choices: Les produits sont présentés sous forme de cartes pour un balayage visuel rapide (Objectif: Organiser). Le clic sur une carte déclenche l'affichage des détails (Objectif: Informer). Pour la comparaison des données techniques, un graphique à barres (Chart.js sur Canvas) est utilisé car il permet une comparaison visuelle instantanée des attributs numériques comme la surface et la capacité de charge (Objectif: Comparer). L'interaction se fait via des boutons qui filtrent le graphique par catégorie ou par type de donnée, ce qui est plus intuitif que de consulter plusieurs pages d'un document. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #00000;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 60vh;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 500px;
+            }
+        }
+        .nav-button.active {
+            background-color: #E0005B;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid #d1d5db;
+            margin-bottom: 1rem;
+            transition: all 0.2s ease-in-out;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #E0005B;
+            box-shadow: 0 0 0 3px rgba(224, 0, 91, 0.3);
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-[#E0005B] flex items-center">
+                <img src="https://www.prodjekt.fr/wp-content/uploads/2019/05/prodjekt-logo.png" alt="Logo Prodjekt" class="h-8 mr-2" onerror="this.onerror=null;this.src='https://placehold.co/150x50/FFFFFF/E0005B?text=PRODJEKT'">
+            </h1>
+            <nav class="hidden md:flex items-center space-x-4">
+                <a href="#catalogue" class="text-gray-600 hover:text-[#E0005B] transition-colors">Catalogue</a>
+                <a href="#comparateur" class="text-gray-600 hover:text-[#E0005B] transition-colors">Comparateur</a>
+                <a href="#contact" class="text-gray-600 hover:text-[#E0005B] transition-colors">Contact</a>
+            </nav>
+            <a href="#contact" class="hidden sm:inline-block bg-[#E0005B] text-white px-4 py-2 rounded-lg font-semibold hover:bg-opacity-90 transition-all">Demander un devis</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+
+        <section id="hero" class="text-center mb-12">
+<h2 class="text-4xl md:text-5xl font-bold mb-4 text-[#E0005B]">Votre Scène, Notre Expertise</h2>
+<p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                Chez <strong>PRODJEKT</strong>, nous donnons vie à vos événements. Parcourez notre catalogue interactif pour trouver la structure parfaite, des scènes grandioses aux dômes immersifs.
+            </p>
+        </section>
+
+        <section id="catalogue" class="mb-16">
+            <h3 class="text-3xl font-bold text-center mb-8">Explorer nos solutions</h3>
+            <div id="filters" class="flex flex-wrap justify-center gap-2 mb-8">
+            </div>
+
+            <div id="details-view" class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-8 sticky top-24 z-40 hidden">
+            </div>
+
+            <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            </div>
+        </section>
+
+        <section id="comparateur" class="py-16 bg-white rounded-2xl shadow-lg">
+            <div class="text-center mb-8">
+                <h3 class="text-3xl font-bold">Comparateur Technique</h3>
+                <p class="text-gray-600 mt-2">Visualisez et comparez les spécifications de nos structures.</p>
+            </div>
+            <div class="flex justify-center flex-wrap gap-3 mb-6 px-4">
+                <button id="compare-surface" class="nav-button active bg-[#E0005B] text-white px-4 py-2 rounded-lg font-semibold hover:bg-opacity-90">Comparer par Surface (m²)</button>
+                <button id="compare-charge" class="nav-button bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100">Comparer par Charge (tonnes)</button>
+            </div>
+            <div class="chart-container">
+                <canvas id="comparisonChart"></canvas>
+            </div>
+        </section>
+
+        <section id="contact" class="py-16">
+            <div class="max-w-xl mx-auto bg-white rounded-2xl shadow-lg p-8">
+                <h3 class="text-3xl font-bold text-center mb-4">Contactez-nous</h3>
+                <p class="text-gray-600 text-center mb-8">Pour plus d'informations ou pour une demande de devis, remplissez le formulaire ci-dessous.</p>
+                <form id="contact-form" class="space-y-4">
+                    <div>
+                        <input type="text" id="nom" name="nom" placeholder="Nom" class="form-input" required>
+                    </div>
+                    <div>
+                        <input type="text" id="prenom" name="prenom" placeholder="Prénom" class="form-input" required>
+                    </div>
+                    <div>
+                        <input type="email" id="email" name="email" placeholder="Email" class="form-input" required>
+                    </div>
+                    <div>
+                        <input type="tel" id="telephone" name="telephone" placeholder="Téléphone" class="form-input">
+                    </div>
+                    <div>
+                        <textarea id="message" name="message" rows="4" placeholder="Votre message..." class="form-input" required></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-[#E0005B] text-white px-4 py-3 rounded-lg font-semibold hover:bg-opacity-90">Envoyer</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
+            <p class="mb-2">PRODJEKT - Une marque de SLS Group</p>
+            <p class="mb-2">Carrefour de l'Artois, 62490 Fresnes-lès-Montauban</p>
+            <p class="mb-4">
+                <a href="tel:+33391190063" class="hover:text-[#E0005B] transition-colors">Tél : +33 3 91 19 00 63</a> | 
+                <a href="mailto:welcome@prodjekt.fr" class="hover:text-[#E0005B] transition-colors">Email : welcome@prodjekt.fr</a>
+            </p>
+            <a href="https://prodjekt.fr/" target="_blank" rel="noopener noreferrer" class="text-[#E0005B] font-semibold hover:underline">prodjekt.fr</a>
+        </div>
+    </footer>
+
+    <script>
+        const products = [
+            {
+                category: "Grande Scène",
+                name: "Grande Scène (B100R Prolyte)",
+                description: "Idéale pour les grands festivals et les concerts en plein air, cette scène modulaire offre une adaptabilité maximale.",
+                surface: 240,
+                resistance: 750,
+                charge: 13,
+                hauteur: 9.5,
+                options: "Régies de 96 m² à 192 m², capacité d'accroche son de 1,5T par côté.",
+                imageUrl: "https://www.prodjekt.fr/wp-content/uploads/2025/09/img144.jpg"
+            },
+            {
+                category: "Grande Scène",
+                name: "Alpha Stage 80 (Mobile)",
+                description: "Une solution rapide et efficace pour les événements de taille moyenne. Sa mobilité permet un montage et un démontage en un temps record.",
+                surface: 82,
+                hauteurPlancher: "1,20 à 1,60",
+                resistance: 500,
+                charge: 10,
+                options: "Accès de plain-pied, escaliers.",
+                imageUrl: "https://www.prodjekt.fr/wp-content/uploads/2025/09/IMG_7008.jpeg"
+            },
+            {
+                category: "Arc-Roof",
+                name: "Arc-Roof 14 x 11 HT",
+                description: "Pour un show spectaculaire.",
+                surface: 154,
+                resistance: 750,
+                hauteur: 7.1,
+                charge: 5,
+                options: "Extensions pour régie, quai de déchargement, accroche son.",
+                imageUrl: "https://www.prodjekt.fr/wp-content/uploads/2025/09/img174.jpg"
+            },
+            {
+                category: "Arc-Roof",
+                name: "Arc-Roof 10 x 8 HT",
+                description: "Parfaite pour toutes les circonstances.",
+                surface: 80,
+                resistance: 750,
+                hauteur: 4.1,
+                charge: 5,
+                options: "Extensions pour régie, quai de déchargement, accroche son.",
+                imageUrl: "https://www.prodjekt.fr/wp-content/uploads/2025/09/img198.jpg"
+            },
+            {
+                category: "Arc-Roof",
+                name: "Arc-Roof 10 x 8",
+                description: "Élégance et design pour vos scènes.",
+                surface: 80,
+                resistance: 750,
+                hauteur: 4.65,
+                charge: 1.2,
+                options: "Bâches personnalisables, extensions.",
+                imageUrl: "https://www.prodjekt.fr/wp-content/uploads/2025/09/img204.jpg"
+            },
+            {
+                category: "Arc-Roof",
+                name: "Arc-Roof 8 x 6",
+                description: "Une scène compacte et polyvalente.",
+                surface: 48,
+                resistance: 750,
+                hauteur: 3.65,
+                charge: 1.6,
+                options: "Bâches, extensions, modification des hauteurs.",
+                imageUrl: "https://www.prodjekt.fr/wp-content/uploads/2025/09/img241.jpg"
+            },
+            {
+                category: "Arc-Roof",
+                name: "Arc-Roof 6 x 4",
+                description: "La solution économique pour les petits événements.",
+                surface: 24,
+                resistance: 750,
+                hauteur: 2.74,
+                charge: 1.4,
+                options: "Montage sans plancher, extensions.",
+                imageUrl: "https://www.prodjekt.fr/wp-content/uploads/2025/09/img263.jpg"
+            },
+            {
+                category: "Arc-Roof",
+                name: "Arc-Roof 4 x 4",
+                description: "La plus économique et pratique de la gamme.",
+                surface: 16,
+                resistance: 750,
+                hauteur: 2.74,
+                charge: 2,
+                options: "Montage sans plancher, extensions.",
+                imageUrl: "https://www.prodjekt.fr/wp-content/uploads/2025/09/img290.jpg"
+            },
+            {
+                category: "Tunnels & Dômes",
+                name: "Tunnel Roof",
+                description: "Une solution modulaire pour créer des passerelles ou des espaces d'accueil.",
+                largeur: "4m, 6m, 10m",
+                profondeur: "4m à 50m",
+                hauteur: 4.2,
+                charge: 1.5,
+                options: "Bâches transparentes, adaptables pour les défilés.",
+                imageUrl: "https://www.prodjekt.fr/wp-content/uploads/2025/09/img294.jpg"
+            },
+            {
+                category: "Tunnels & Dômes",
+                name: "Dômes (38, 68 et 100 m²)",
+                description: "Pour des réceptions ou des espaces innovants.",
+                avantages: "Montage rapide, légers, résistants, transportables et connectables.",
+                surface: 100,
+                charge: 0,
+                imageUrl: "https://www.prodjekt.fr/wp-content/uploads/2025/09/img319.jpg"
+            },
+            {
+                category: "Tunnels & Dômes",
+                name: "Dôme Géodésique (95 m²)",
+                description: "L'originalité au service de votre événement.",
+                avantages: "Structure très résistante, esthétique unique, possibilité de projection à 360°.",
+                surface: 95,
+                charge: 0,
+                imageUrl: "https://www.prodjekt.fr/wp-content/uploads/2025/09/img328.jpg"
+            }
+        ];
+
+        const productGrid = document.getElementById('product-grid');
+        const filtersContainer = document.getElementById('filters');
+        const detailsView = document.getElementById('details-view');
+        let currentFilter = 'Tous';
+        let chart;
+
+        const categories = ['Tous', ...new Set(products.map(p => p.category))];
+
+        function renderFilters() {
+            filtersContainer.innerHTML = categories.map(cat => `
+                <button class="nav-button px-4 py-2 rounded-lg font-semibold transition-all ${currentFilter === cat ? 'active' : 'bg-white shadow-sm hover:bg-gray-100'}" data-filter="${cat}">
+                    ${cat}
+                </button>
+            `).join('');
+        }
+
+        function renderProducts() {
+            const filteredProducts = currentFilter === 'Tous'
+                ? products
+                : products.filter(p => p.category === currentFilter);
+
+            productGrid.innerHTML = filteredProducts.map((p, index) => `
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer transform hover:-translate-y-1 transition-transform duration-300 fade-in" data-index="${products.indexOf(p)}">
+                    <img src="${p.imageUrl}" alt="${p.name}" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h4 class="text-xl font-bold mb-2">${p.name}</h4>
+                        <p class="text-gray-600 mb-4 h-12">${p.description}</p>
+                        <div class="flex items-center justify-between text-sm font-semibold">
+                            ${p.surface ? `<span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full">${p.surface} m²</span>` : '<span></span>'}
+                            <span class="text-[#E0005B] hover:underline">Voir les détails →</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showDetails(product) {
+            let specsHtml = '';
+            if (product.surface) specsHtml += `<li><strong>Surface :</strong> ${product.surface} m²</li>`;
+            if (product.resistance) specsHtml += `<li><strong>Résistance :</strong> ${product.resistance} kg/m²</li>`;
+            if (product.charge) specsHtml += `<li><strong>Charge Toiture/Arches :</strong> ${product.charge} tonnes</li>`;
+            if (product.hauteur) specsHtml += `<li><strong>Hauteur sous perche/arche :</strong> ${product.hauteur} m</li>`;
+            if (product.hauteurPlancher) specsHtml += `<li><strong>Hauteur plancher :</strong> ${product.hauteurPlancher} m</li>`;
+            if (product.largeur) specsHtml += `<li><strong>Largeur :</strong> ${product.largeur}</li>`;
+            if (product.profondeur) specsHtml += `<li><strong>Profondeur :</strong> ${product.profondeur}</li>`;
+            if (product.avantages) specsHtml += `<li><strong>Avantages :</strong> ${product.avantages}</li>`;
+            if (product.options) specsHtml += `<li><strong>Options :</strong> ${product.options}</li>`;
+            
+            detailsView.innerHTML = `
+                <div class="flex justify-between items-start fade-in">
+                    <h3 class="text-2xl font-bold mb-4">${product.name}</h3>
+                    <button id="close-details" class="text-2xl text-gray-500 hover:text-gray-800">&times;</button>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <img src="${product.imageUrl}" alt="${product.name}" class="w-full h-64 object-cover rounded-lg">
+                    <div>
+                        <p class="text-gray-600 mb-4">${product.description}</p>
+                        <ul class="space-y-2 text-gray-700 list-disc list-inside bg-gray-50 p-4 rounded-lg">
+                            ${specsHtml}
+                        </ul>
+                    </div>
+                </div>
+            `;
+            detailsView.classList.remove('hidden');
+            detailsView.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        filtersContainer.addEventListener('click', e => {
+            if (e.target.tagName === 'BUTTON') {
+                currentFilter = e.target.dataset.filter;
+                renderFilters();
+                renderProducts();
+                detailsView.classList.add('hidden');
+            }
+        });
+
+        productGrid.addEventListener('click', e => {
+            const card = e.target.closest('div[data-index]');
+            if (card) {
+                const productIndex = parseInt(card.dataset.index);
+                showDetails(products[productIndex]);
+            }
+        });
+        
+        detailsView.addEventListener('click', e => {
+            if (e.target.id === 'close-details') {
+                detailsView.classList.add('hidden');
+            }
+        });
+        
+        function renderChart(compareBy = 'surface') {
+            const ctx = document.getElementById('comparisonChart').getContext('2d');
+            
+            const data = {
+                labels: products.map(p => p.name.length > 25 ? p.name.substring(0,22)+'...' : p.name),
+                datasets: [{
+                    label: compareBy === 'surface' ? 'Surface (m²)' : 'Charge (tonnes)',
+                    data: products.map(p => p[compareBy] || 0),
+                    backgroundColor: 'rgba(224, 0, 91, 0.6)',
+                    borderColor: 'rgba(224, 0, 91, 1)',
+                    borderWidth: 1,
+                    borderRadius: 5,
+                }]
+            };
+
+            const options = {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: compareBy === 'surface' ? 'Surface en mètres carrés (m²)' : 'Capacité de charge en tonnes',
+                            font: {
+                                size: 14,
+                            }
+                        }
+                    },
+                    y: {
+                       ticks: {
+                           autoSkip: false
+                       }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.x !== null) {
+                                    label += context.parsed.x + (compareBy === 'surface' ? ' m²' : ' tonnes');
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            };
+            
+            if (chart) {
+                chart.destroy();
+            }
+            chart = new Chart(ctx, { type: 'bar', data, options });
+        }
+
+        document.getElementById('compare-surface').addEventListener('click', (e) => {
+            renderChart('surface');
+            document.getElementById('compare-surface').classList.add('active');
+            document.getElementById('compare-charge').classList.remove('active');
+        });
+
+        document.getElementById('compare-charge').addEventListener('click', (e) => {
+            renderChart('charge');
+            document.getElementById('compare-charge').classList.add('active');
+            document.getElementById('compare-surface').classList.remove('active');
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderFilters();
+            renderProducts();
+            renderChart('surface');
+        });
+    </script>
+
+</body>
+</html>
