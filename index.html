@@ -57,6 +57,35 @@
             border-color: #E0005B;
             box-shadow: 0 0 0 3px rgba(224, 0, 91, 0.3);
         }
+        #details-view {
+  overflow-y: auto;
+  max-height: 80vh;
+  position: fixed;
+  top: 10vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 95vw;
+  max-width: 600px;
+  z-index: 9999;
+}
+body.no-scroll {
+  overflow: hidden;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+}
+@media (max-width: 640px) {
+  #details-view {
+    top: 0;
+    left: 0;
+    transform: none;
+    width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+    padding: 1rem;
+  }
+}
     </style>
 </head>
 <body class="text-gray-800">
