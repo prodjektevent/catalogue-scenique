@@ -397,13 +397,12 @@ body.no-scroll {
 
         detailsView.addEventListener('click', function(e) {
     if (e.target && e.target.id === 'demande-devis') {
-        // Récupère le nom du produit affiché
         const produit = detailsView.querySelector('h3').textContent;
-        // Pré-remplit le formulaire
         document.getElementById('message').value = `Demande de devis pour : ${produit}\n`;
-        // Scroll vers la section contact
         document.getElementById('contact').scrollIntoView({behavior: 'smooth'});
-        // Ferme le popup
+        setTimeout(() => {
+            document.getElementById('nom').focus();
+        }, 600);
         detailsView.classList.add('hidden');
         document.body.classList.remove('no-scroll');
     }
