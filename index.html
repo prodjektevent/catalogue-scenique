@@ -383,18 +383,18 @@ body.no-scroll {
                 : products.filter(p => p.category === currentFilter);
 
             productGrid.innerHTML = filteredProducts.map((p, index) => `
-                <div class="bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer transform hover:-translate-y-1 transition-transform duration-300 fade-in" data-index="${products.indexOf(p)}">
-                    <img src="${p.imageUrl}" alt="${p.name}" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h4 class="text-xl font-bold mb-2">${p.name}</h4>
-                        <p class="text-gray-600 mb-6">${p.description}</p>
-                        <div class="flex items-center justify-between text-sm font-semibold">
-                            ${p.surface ? `<span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full">${p.surface} m²</span>` : '<span></span>'}
-                            <span class="text-[#E0005B] hover:underline">Voir les détails →</span>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer transform hover:-translate-y-1 transition-transform duration-300 fade-in" data-index="${products.indexOf(p)}">
+        <img src="${p.imageUrl}" alt="${p.name}" class="w-full h-48 object-cover">
+        <div class="p-6">
+            <h4 class="text-xl font-bold mb-2">${p.name}</h4>
+            <p class="text-gray-600 mb-6">${p.description}</p>
+            <div class="flex items-center justify-between text-sm font-semibold">
+                ${p.surface ? `<span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full">${p.surface} m²</span>` : '<span></span>'}
+                <span class="text-[#E0005B] hover:underline">Voir les détails →</span>
+            </div>
+        </div>
+    </div>
+`).join('');
         }
 
         function showDetails(product) {
