@@ -212,7 +212,11 @@ body.no-scroll {
                 hauteur: 7.1,
                 charge: 5,
                 options: "Extensions pour régie, quai de déchargement, accroche son.",
-                imageUrl: "https://www.prodjekt.fr/wp-content/uploads/2025/09/img174.jpg"
+                imageUrl: "https://www.prodjekt.fr/wp-content/uploads/2025/09/img174.jpg",
+                images: [
+        "https://www.prodjekt.fr/wp-content/uploads/2025/07/IMG_6684.jpg",
+        "https://www.prodjekt.fr/wp-content/uploads/2025/09/img174.jpg",
+    ]
             },
             {
                 category: "Arc-Roof",
@@ -337,39 +341,67 @@ body.no-scroll {
         }
 
         function showDetails(product) {
-            let specsHtml = '';
-            if (product.surface) specsHtml += `<li><strong>Surface :</strong> ${product.surface} m²</li>`;
-            if (product.resistance) specsHtml += `<li><strong>Résistance :</strong> ${product.resistance} kg/m²</li>`;
-            if (product.charge) specsHtml += `<li><strong>Charge Toiture/Arches :</strong> ${product.charge} tonnes</li>`;
-            if (product.hauteur) specsHtml += `<li><strong>Hauteur sous perche/arche :</strong> ${product.hauteur} m</li>`;
-            if (product.hauteurPlancher) specsHtml += `<li><strong>Hauteur plancher :</strong> ${product.hauteurPlancher} m</li>`;
-            if (product.largeur) specsHtml += `<li><strong>Largeur :</strong> ${product.largeur}</li>`;
-            if (product.profondeur) specsHtml += `<li><strong>Profondeur :</strong> ${product.profondeur}</li>`;
-            if (product.avantages) specsHtml += `<li><strong>Avantages :</strong> ${product.avantages}</li>`;
-            if (product.options) specsHtml += `<li><strong>Options :</strong> ${product.options}</li>`;
-            
-            detailsView.innerHTML = `
-    <div class="flex justify-between items-start fade-in">
-        <h3 class="text-2xl font-bold mb-4">${product.name}</h3>
-        <button id="close-details" class="text-2xl text-gray-500 hover:text-gray-800">&times;</button>
-    </div>
-    <div class="grid md:grid-cols-2 gap-8">
-        <img src="${product.imageUrl}" alt="${product.name}" class="w-full max-h-[50vh] object-contain rounded-lg mx-auto">
-        <div>
-            <p class="text-gray-600 mb-4">${product.description}</p>
-            <ul class="space-y-2 text-gray-700 list-disc list-inside bg-gray-50 p-4 rounded-lg">
-                ${specsHtml}
-            </ul>
-            <button id="demande-devis" class="mt-6 w-full bg-[#E0005B] text-white px-4 py-3 rounded-lg font-semibold hover:bg-opacity-90">
-                Demander un devis pour ce produit
-            </button>
+    let specsHtml = '';
+    if (product.surface) specsHtml += `<li><strong>Surface :</strong> ${product.surface} m²</li>`;
+    if (product.resistance) specsHtml += `<li><strong>Résistance :</strong> ${product.resistance} kg/m²</li>`;
+    if (product.charge) specsHtml += `<li><strong>Charge Toiture/Arches :</strong> ${product.charge} tonnes</li>`;
+    if (product.hauteur) specsHtml += `<li><strong>Hauteur sous perche/arche :</strong> ${product.hauteur} m</li>`;
+    if (product.hauteurPlancher) specsHtml += `<li><strong>Hauteur plancher :</strong> ${product.hauteurPlancher} m</li>`;
+    if (product.largeur) specsHtml += `<li><strong>Largeur :</strong> ${product.largeur}</li>`;
+    if (product.profondeur) specsHtml += `<li><strong>Profondeur :</strong> ${product.profondeur}</li>`;
+    if (product.avantages) specsHtml += `<li><strong>Avantages :</strong> ${product.avantages}</li>`;
+    if (product.options) specsHtml += `<li><strong>Options :</strong> ${product.options}</li>`;
+
+    // Diaporama HTML
+    let images = product.images && product.images.length ? product.images : [product.imageUrl];
+    let diapoHtml = `
+        <div class="relative w-full max-h-[50vh] flex justify-center items-center">
+            <img id="diapo-img" src="${images[0]}" alt="${product.name}" class="w-full object-contain rounded-lg mx-auto" />
+            ${images.length > 1 ? `
+            <button id="diapo-prev" class="absolute left-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-gray-200 rounded-full">&#8592;</button>
+            <button id="diapo-next" class="absolute right-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-gray-200 rounded-full">&#8594;</button>
+            ` : ''}
         </div>
-    </div>
-`;
-            detailsView.classList.remove('hidden');
-            document.body.classList.add('no-scroll');
-            detailsView.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+    `;
+
+    detailsView.innerHTML = `
+        <div class="flex justify-between items-start fade-in">
+            <h3 class="text-2xl font-bold mb-4">${product.name}</h3>
+            <button id="close-details" class="text-2xl text-gray-500 hover:text-gray-800">&times;</button>
+        </div>
+        <div class="grid md:grid-cols-2 gap-8">
+            ${diapoHtml}
+            <div>
+                <p class="text-gray-600 mb-4">${product.description}</p>
+                <ul class="space-y-2 text-gray-700 list-disc list-inside bg-gray-50 p-4 rounded-lg">
+                    ${specsHtml}
+                </ul>
+                <button id="demande-devis" class="mt-6 w-full bg-[#E0005B] text-white px-4 py-3 rounded-lg font-semibold hover:bg-opacity-90">
+                    Demander un devis pour ce produit
+                </button>
+            </div>
+        </div>
+    `;
+    detailsView.classList.remove('hidden');
+    document.body.classList.add('no-scroll');
+    detailsView.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    // Diaporama JS
+    if (images.length > 1) {
+        let currentImg = 0;
+        const imgTag = detailsView.querySelector('#diapo-img');
+        const prevBtn = detailsView.querySelector('#diapo-prev');
+        const nextBtn = detailsView.querySelector('#diapo-next');
+        prevBtn.onclick = () => {
+            currentImg = (currentImg - 1 + images.length) % images.length;
+            imgTag.src = images[currentImg];
+        };
+        nextBtn.onclick = () => {
+            currentImg = (currentImg + 1) % images.length;
+            imgTag.src = images[currentImg];
+        };
+    }
+}
 
         filtersContainer.addEventListener('click', e => {
             if (e.target.tagName === 'BUTTON') {
