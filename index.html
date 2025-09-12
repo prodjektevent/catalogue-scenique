@@ -146,24 +146,48 @@ body.no-scroll {
                 <h3 class="text-3xl font-bold text-center mb-4">Contactez-nous</h3>
                 <p class="text-gray-600 text-center mb-8">Pour plus d'informations ou pour une demande de devis, remplissez le formulaire ci-dessous.</p>
                 <form id="contact-form" action="https://formspree.io/f/xnnbwelv" method="POST" class="space-y-4">
-                    <div>
-                        <input type="text" id="nom" name="nom" placeholder="Nom" class="form-input" required>
-                    </div>
-                    <div>
-                        <input type="text" id="prenom" name="prenom" placeholder="Prénom" class="form-input" required>
-                    </div>
-                    <div>
-                        <input type="email" id="email" name="email" placeholder="Email" class="form-input" required>
-                    </div>
-                    <div>
-                        <input type="tel" id="telephone" name="telephone" placeholder="Téléphone" class="form-input">
-                    </div>
-                    <div>
-                        <textarea id="message" name="message" rows="4" placeholder="Votre message..." class="form-input" required></textarea>
-                    </div>
-                    <button type="submit" class="w-full bg-[#E0005B] text-white px-4 py-3 rounded-lg font-semibold hover:bg-opacity-90">Envoyer</button>
-                </form>
-            </div>
+    <div>
+        <label for="type-evenement" class="sr-only">Type d'événement</label>
+        <select id="type-evenement" name="type-evenement" class="form-input" required>
+            <option value="">Type d'événement</option>
+            <option>Festival</option>
+            <option>Concert</option>
+            <option>Inauguration</option>
+            <option>Evénement sportif</option>
+            <option>Conférence</option>
+            <option>Anniversaire</option>
+            <option>Séminaire</option>
+            <option>Voeux</option>
+            <option>Défilé de mode</option>
+            <option>Salon</option>
+            <option>Autre</option>
+        </select>
+    </div>
+    <div>
+        <label for="nom" class="sr-only">Nom</label>
+        <input type="text" id="nom" name="nom" placeholder="Nom" class="form-input" required>
+    </div>
+    <div>
+        <label for="prenom" class="sr-only">Prénom</label>
+        <input type="text" id="prenom" name="prenom" placeholder="Prénom" class="form-input" required>
+    </div>
+    <div>
+        <label for="email" class="sr-only">Email</label>
+        <input type="email" id="email" name="email" placeholder="Email" class="form-input" required>
+    </div>
+    <div>
+        <label for="telephone" class="sr-only">Téléphone</label>
+        <input type="tel" id="telephone" name="telephone" placeholder="Téléphone" class="form-input">
+    </div>
+    <div>
+        <label for="message" class="sr-only">Message</label>
+        <textarea id="message" name="message" rows="4" placeholder="Votre message..." class="form-input" required></textarea>
+    </div>
+    <button type="submit" class="w-full bg-[#E0005B] text-white px-4 py-3 rounded-lg font-semibold hover:bg-opacity-90">Envoyer</button>
+</form>
+<div id="form-confirmation" class="hidden text-green-600 text-center mt-6 font-semibold">
+    Merci ! Votre demande a bien été envoyée.<br>Nous vous répondrons rapidement.
+</div>
         </section>
     </main>
 
@@ -574,5 +598,24 @@ lightbox.onclick = () => {
 <div id="img-lightbox" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-80 flex items-center justify-center z-[99999] hidden">
     <img id="lightbox-img" src="" alt="" class="max-w-[90vw] max-h-[90vh] rounded-2xl shadow-xl border-4 border-white" />
 </div>
+    document.getElementById('contact-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    fetch(this.action, {
+        method: 'POST',
+        body: new FormData(this),
+        headers: { 'Accept': 'application/json' }
+    })
+    .then(response => {
+        if (response.ok) {
+            this.reset();
+            document.getElementById('form-confirmation').classList.remove('hidden');
+        } else {
+            alert("Une erreur est survenue. Réessayez.");
+        }
+    })
+    .catch(() => {
+        alert("Une erreur est survenue. Réessayez.");
+    });
+});
 </body>
 </html>
