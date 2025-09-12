@@ -409,21 +409,34 @@ body.no-scroll {
     document.body.classList.add('no-scroll');
     detailsView.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-    // Diaporama JS
-    if (images.length > 1) {
-        let currentImg = 0;
-        const imgTag = detailsView.querySelector('#diapo-img');
-        const prevBtn = detailsView.querySelector('#diapo-prev');
-        const nextBtn = detailsView.querySelector('#diapo-next');
-        prevBtn.onclick = () => {
-            currentImg = (currentImg - 1 + images.length) % images.length;
-            imgTag.src = images[currentImg];
-        };
-        nextBtn.onclick = () => {
-            currentImg = (currentImg + 1) % images.length;
-            imgTag.src = images[currentImg];
-        };
-    }
+    // Diaporama JS (auto défilement)
+let autoSlideInterval;
+if (images.length > 1) {
+    let currentImg = 0;
+    const imgTag = detailsView.querySelector('#diapo-img');
+    const prevBtn = detailsView.querySelector('#diapo-prev');
+    const nextBtn = detailsView.querySelector('#diapo-next');
+    prevBtn.onclick = () => {
+        currentImg = (currentImg - 1 + images.length) % images.length;
+        imgTag.src = images[currentImg];
+    };
+    nextBtn.onclick = () => {
+        currentImg = (currentImg + 1) % images.length;
+        imgTag.src = images[currentImg];
+    };
+    // Auto slide toutes les 3 secondes
+    autoSlideInterval = setInterval(() => {
+        currentImg = (currentImg + 1) % images.length;
+        imgTag.src = images[currentImg];
+    }, 2000);
+
+    // Stop auto slide quand on ferme la popup
+    detailsView.querySelector('#close-details').onclick = () => {
+        clearInterval(autoSlideInterval);
+        detailsView.classList.add('hidden');
+        document.body.classList.remove('no-scroll');
+    };
+}
 }
 
         filtersContainer.addEventListener('click', e => {
