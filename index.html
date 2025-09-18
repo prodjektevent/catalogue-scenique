@@ -143,7 +143,6 @@ body.no-scroll {
             <div class="flex justify-center flex-wrap gap-3 mb-6 px-4">
     <button id="compare-surface" class="nav-button active bg-[#E0005B] text-white px-4 py-2 rounded-lg font-semibold hover:bg-opacity-90">Surface (m²)</button>
     <button id="compare-charge" class="nav-button bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100">Charge (tonnes)</button>
-    <button id="compare-resistance" class="nav-button bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100">Résistance (kg/m²)</button>
     <button id="compare-hauteur" class="nav-button bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100">Hauteur sous perche/arche (m)</button>
 </div>
             <div class="chart-container">
@@ -536,7 +535,6 @@ lightbox.onclick = () => {
         dataArr = products.map(p => p[compareBy] || 0);
         if (compareBy === 'surface') { chartLabel = 'Surface (m²)'; tooltipUnit = ' m²'; }
         if (compareBy === 'charge') { chartLabel = 'Charge (tonnes)'; tooltipUnit = ' tonnes'; }
-        if (compareBy === 'resistance') { chartLabel = 'Résistance (kg/m²)'; tooltipUnit = ' kg/m²'; }
         if (compareBy === 'hauteur') { chartLabel = 'Hauteur sous perche/arche (m)'; tooltipUnit = ' m'; }
     } 
     const data = {
@@ -591,10 +589,6 @@ lightbox.onclick = () => {
 });
 document.getElementById('compare-charge').addEventListener('click', function() {
     renderChart('charge');
-    setActive(this);
-});
-document.getElementById('compare-resistance').addEventListener('click', function() {
-    renderChart('resistance');
     setActive(this);
 });
 document.getElementById('compare-hauteur').addEventListener('click', function() {
