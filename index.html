@@ -111,7 +111,7 @@ body.no-scroll {
 </head>
 <body class="text-gray-800">
 
-    <header class="bg-white shadow-sm sticky top-0 z-50">
+   <header class="bg-white shadow-sm sticky top-0 z-50">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-center md:justify-between">
         <a href="#" class="text-2xl font-bold text-[#E0005B] flex items-center">
             <img src="https://www.prodjekt.fr/wp-content/uploads/2019/05/prodjekt-logo.png" alt="Logo Prodjekt" class="h-8 mr-2" onerror="this.onerror=null;this.src='https://placehold.co/150x50/FFFFFF/E0005B?text=PRODJEKT'">
@@ -121,19 +121,21 @@ body.no-scroll {
             <a href="#comparateur" class="text-gray-600 hover:text-[#E0005B] transition-colors">Comparateur</a>
             <a href="#contact" class="text-gray-600 hover:text-[#E0005B] transition-colors">Contact</a>
         </nav>
-        <a href="#contact" class="sm:inline-block bg-[#E0005B] text-white px-4 py-2 rounded-lg font-semibold hover:bg-opacity-90 transition-all">
-    <span class="hidden sm:inline">Demander un devis</span>
-    <svg class="sm:hidden h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h18M3 12h18M3 19h18"/>
-    </svg>
-</a>
+        <!-- Bouton desktop caché sur mobile -->
+        <a href="#contact" class="hidden md:inline-block bg-[#E0005B] text-white px-4 py-2 rounded-lg font-semibold hover:bg-opacity-90 transition-all">Demander un devis</a>
     </div>
 </header>
 
-    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+<main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+    <!-- Nouveau bouton mobile -->
+    <div class="md:hidden text-center mb-6">
+        <a href="#contact" class="inline-block bg-[#E0005B] text-white px-6 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-all text-sm">
+            Demander un devis
+        </a>
+    </div>
 
-        <section id="hero" class="text-center mb-12">
-<h2 class="text-4xl md:text-5xl font-bold mb-4 text-[#E0005B]">La scène sur-mesure, signée Prodjekt !</h2>
+    <section id="hero" class="text-center mb-12">
+        <h2 class="text-4xl md:text-5xl font-bold mb-4 text-[#E0005B]">La scène sur-mesure, signée Prodjekt !</h2>
 <p class="text-lg text-white max-w-3xl mx-auto">
                 Chez <strong>PRODJEKT</strong>, nous donnons vie à vos événements. Parcourez notre catalogue interactif pour trouver la structure parfaite, des scènes grandioses aux dômes immersifs.
             </p>
