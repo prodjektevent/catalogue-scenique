@@ -137,11 +137,12 @@
             .burger-menu-btn { display: block; }
             .cta-btn { font-size: 0.7rem; padding: 8px 12px; margin: 0 10px; }
             .page-title { font-size: 2.5rem; }
-            .modal-content { padding: 20px; width: 95%; }
             .tech-gallery { flex-direction: column; height: 500px; }
             .tech-item:hover { flex: 2; }
+            .modal-content { padding: 20px; width: 95%; }
             .specs-list { grid-template-columns: 1fr; }
-            .form-grid, .footer-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .form-grid { grid-template-columns: 1fr; }
             .full-width { grid-column: span 1; }
             .glass-form-container { padding: 20px; }
         }
@@ -153,19 +154,17 @@
 
     <header>
         <a href="index.html" class="logo-wrapper"><img src="https://www.prodjekt.fr/wp-content/uploads/2025/11/Logo-Prodjekt-blanc.png" alt="Logo Prodjekt" class="logo-img"></a>
-        <nav class="desktop-nav"><ul><li><a href="realisations.html">Nos réalisations</a></li><li><a href="cle-en-main.html">Clé en main</a></li><li><a href="actualites.html">L'actu</a></li><li><a href="catalogue.html" class="active">Catalogue scénique</a></li></ul></nav>
         <a href="#contact" class="cta-btn">Demander un Devis</a>
         <div class="burger-menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
     </header>
 
     <div class="mobile-menu-overlay" id="mobileMenu">
         <div style="position: absolute; top: 20px; right: 20px; font-size: 2rem; color: white; cursor: pointer;" onclick="toggleMenu()"><i class="fas fa-times"></i></div>
-        <ul><li><a href="realisations.html" onclick="toggleMenu()">Nos réalisations</a></li><li><a href="cle-en-main.html" onclick="toggleMenu()">Clé en main</a></li><li><a href="actualites.html" onclick="toggleMenu()">L'actu</a></li><li><a href="catalogue.html" onclick="toggleMenu()">Catalogue scénique</a></li></ul>
     </div>
 
     <div class="page-header">
         <h1 class="page-title text-glow-anim">Catalogue Scénique</h1>
-        <p class="page-subtitle">Explorez notre parc de structures. Des scènes grandioses aux dômes immersifs.</p>
+        <p class="page-subtitle">Explorez notre parc de structures.</p>
     </div>
 
     <div id="filters"></div>
@@ -195,9 +194,13 @@
 
     <section id="contact" class="contact-section">
         <div class="glass-form-container">
-            <div class="form-header"><h2 class="text-glow-anim">UNE QUESTION ? UN DEVIS ?</h2><p>Remplissez ce formulaire, notre bureau d'études vous répondra.</p></div>
+            <div class="form-header">
+                <h2 class="text-glow-anim">UNE QUESTION ? UN DEVIS ?</h2>
+                <p>Remplissez ce formulaire, notre bureau d'études vous répondra.</p>
+            </div>
             <form action="https://formsubmit.co/communication@prodjekt.fr" method="POST">
-                <input type="text" name="_honey" style="display:none"><input type="hidden" name="_captcha" value="false">
+                <input type="text" name="_honey" style="display:none">
+                <input type="hidden" name="_captcha" value="false">
                 <div class="form-grid">
                     <div class="input-group"><input type="text" name="Nom" id="nom" class="input-field" placeholder=" " required><label for="nom" class="input-label">Nom</label></div>
                     <div class="input-group"><input type="text" name="Prenom" id="prenom" class="input-field" placeholder=" " required><label for="prenom" class="input-label">Prénom</label></div>
@@ -219,8 +222,8 @@
 
     <footer>
         <div class="footer-grid">
-            <div class="footer-col"><img src="https://www.prodjekt.fr/wp-content/uploads/2025/11/Logo-Prodjekt-blanc.png" alt="PRODJEKT" class="footer-logo"><p>Partenaire technique de référence pour l'événementiel en France. Sonorisation, éclairage, vidéo et structure.</p></div>
-            <div class="footer-col"><h4>CONTACT</h4><ul class="contact-list"><li><i class="fas fa-phone-alt"></i> <a href="tel:0391190063">03 91 19 00 63</a></li><li><i class="fas fa-envelope"></i> <a href="mailto:welcome@prodjekt.fr">welcome@prodjekt.fr</a></li><li><i class="fas fa-map-marker-alt"></i> Hauts-de-France / Paris</li></ul></div>
+            <div class="footer-col"><img src="https://www.prodjekt.fr/wp-content/uploads/2025/11/Logo-Prodjekt-blanc.png" alt="PRODJEKT" class="footer-logo"><p>Partenaire technique de référence.</p></div>
+            <div class="footer-col"><h4>CONTACT</h4><ul class="contact-list"><li><i class="fas fa-phone-alt"></i> <a href="tel:0391190063">03 91 19 00 63</a></li><li><i class="fas fa-envelope"></i> <a href="mailto:welcome@prodjekt.fr">welcome@prodjekt.fr</a></li></ul></div>
             <div class="footer-col"><h4>SUIVEZ-NOUS</h4><div class="social-links"><a href="https://www.facebook.com/prodjektevent/" target="_blank" class="social-btn"><i class="fab fa-facebook-f"></i></a><a href="https://www.instagram.com/prodjektevent/" target="_blank" class="social-btn"><i class="fab fa-instagram"></i></a><a href="https://fr.linkedin.com/company/prodjekt" target="_blank" class="social-btn"><i class="fab fa-linkedin-in"></i></a></div></div>
         </div>
         <div class="copyright">&copy; 2025 PRODJEKT. Tous droits réservés.</div>
@@ -229,18 +232,17 @@
 <script>
     function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('active');}
 
-    // DATA PRODUITS (AVEC TOUTES LES CATÉGORIES)
     const products = [
-        { category: "Grande Scène", name: "Grande Scène (B100R Prolyte)", description: "Idéale pour les grands festivals.", surface: 240, resistance: 750, charge: 13, hauteur: 9.5, images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img144.jpg", "https://www.prodjekt.fr/wp-content/uploads/2020/03/Touquet-Music-Beach-Festival-2019.jpg"] },
+        { category: "Grande Scène", name: "Grande Scène (B100R Prolyte)", description: "Idéale pour les grands festivals.", surface: 240, resistance: 750, charge: 13, hauteur: 9.5, images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img144.jpg", "https://www.prodjekt.fr/wp-content/uploads/2020/03/Touquet-Music-Beach-Festival-2019.jpg", "https://www.prodjekt.fr/wp-content/uploads/2025/07/IMG_5665.jpg"] },
         { category: "Grande Scène", name: "Alpha Stage 80 (Mobile)", description: "Solution mobile rapide.", surface: 82, resistance: 500, charge: 10, hauteur: 6, images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/IMG_7008.jpeg"] },
-        { category: "Arc-Roof", name: "Arc-Roof 14 x 11 HT", description: "Show spectaculaire.", surface: 154, resistance: 750, charge: 5, hauteur: 7.1, images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img174.jpg", "https://www.prodjekt.fr/wp-content/uploads/2025/07/IMG_6684.jpg"] },
+        { category: "Arc-Roof", name: "Arc-Roof 14 x 11 HT", description: "Show spectaculaire.", surface: 154, resistance: 750, charge: 5, hauteur: 7.1, images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img174.jpg", "https://www.prodjekt.fr/wp-content/uploads/2025/07/IMG_6684.jpg", "https://www.prodjekt.fr/wp-content/uploads/2025/06/DSC_4079.jpg"] },
         { category: "Arc-Roof", name: "Arc-Roof 10 x 8 HT", description: "Hauteur optimisée.", surface: 80, resistance: 750, charge: 5, hauteur: 4.1, images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img198.jpg"] },
         { category: "Arc-Roof", name: "Arc-Roof 10 x 8", description: "Élégance standard.", surface: 80, resistance: 750, charge: 1.2, hauteur: 4.65, images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img204.jpg"] },
         { category: "Arc-Roof", name: "Arc-Roof 8 x 6", description: "Compacte et polyvalente.", surface: 48, resistance: 750, charge: 1.6, hauteur: 3.65, images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img241.jpg"] },
         { category: "Arc-Roof", name: "Arc-Roof 6 x 4", description: "Petit format.", surface: 24, resistance: 750, charge: 1.4, hauteur: 2.74, images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img263.jpg"] },
         { category: "Arc-Roof", name: "Arc-Roof 4 x 4", description: "Régie ou accueil.", surface: 16, resistance: 750, charge: 2, hauteur: 2.74, images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img290.jpg"] },
         { category: "Tunnels & Dômes", name: "Tunnel Roof", description: "Passerelles et entrées.", surface: 40, resistance: 0, charge: 1.5, hauteur: 4.2, images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img294.jpg"] },
-        { category: "Tunnels & Dômes", name: "Dômes (38, 68, 100 m²)", description: "Espaces réceptifs.", surface: 100, resistance: 0, charge: 0, hauteur: 0, images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img319.jpg"] },
+        { category: "Tunnels & Dômes", name: "Dômes (38, 68, 100 m²)", description: "Espaces réceptifs.", surface: 100, resistance: 0, charge: 0, hauteur: 0, images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/IMG_3876.jpg", "https://www.prodjekt.fr/wp-content/uploads/2025/09/img319.jpg", "https://www.prodjekt.fr/wp-content/uploads/2025/09/IMG_5062.png"] },
         { category: "Tunnels & Dômes", name: "Dôme Géodésique", description: "Esthétique unique.", surface: 95, resistance: 0, charge: 0, hauteur: 5, images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img328.jpg"] }
     ];
 
@@ -281,10 +283,25 @@
         
         const galleryContainer = document.getElementById('modal-gallery-container');
         let galleryHTML = '<div class="tech-gallery">';
+        
+        // Use all images from the array
         const imgList = p.images && p.images.length > 0 ? p.images : [p.imageUrl];
-        imgList.forEach(imgSrc => { galleryHTML += `<div class="tech-item" style="background-image: url('${imgSrc}');" onclick="event.stopPropagation(); openLightbox('${imgSrc}')"></div>`; });
-        if(imgList.length === 1) { galleryHTML += `<div class="tech-item" style="background-image: url('${imgList[0]}');"></div><div class="tech-item" style="background-image: url('${imgList[0]}');"></div>`; }
-        galleryHTML += '</div>';
+        
+        imgList.forEach(imgSrc => { 
+            galleryHTML += `<div class="tech-item" style="background-image: url('${imgSrc}');" onclick="event.stopPropagation(); openLightbox('${imgSrc}')"></div>`; 
+        });
+        
+        // If only 1 image, replicate it to maintain accordion layout
+        if(imgList.length === 1) { 
+             galleryHTML = '<div class="tech-gallery">';
+             galleryHTML += `<div class="tech-item" style="background-image: url('${imgList[0]}');" onclick="event.stopPropagation(); openLightbox('${imgList[0]}')"></div>`;
+             galleryHTML += `<div class="tech-item" style="background-image: url('${imgList[0]}');" onclick="event.stopPropagation(); openLightbox('${imgList[0]}')"></div>`;
+             galleryHTML += `<div class="tech-item" style="background-image: url('${imgList[0]}');" onclick="event.stopPropagation(); openLightbox('${imgList[0]}')"></div>`;
+             galleryHTML += '</div>';
+        } else {
+            galleryHTML += '</div>'; // Close div if multiple images
+        }
+        
         galleryContainer.innerHTML = galleryHTML;
 
         let specs = `<li><strong>Surface :</strong> ${p.surface} m²</li>`;
