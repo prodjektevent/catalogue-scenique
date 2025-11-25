@@ -12,12 +12,19 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        /* --- VARIABLES & STYLE GLOBAL --- */
+        /* --- STYLE GLOBAL (IDENTIQUE ACCUEIL) --- */
         :root { --primary: #2D5BFF; --accent: #e0005b; --text-main: #ffffff; --text-muted: #cccccc; --glass: rgba(255, 255, 255, 0.05); --glass-border: rgba(255, 255, 255, 0.15); --footer-bg: rgba(10, 10, 10, 0.95); }
         * { margin: 0; padding: 0; box-sizing: border-box; outline: none; font-family: 'Space Grotesk', sans-serif; }
-        body { background-color: #050505; color: var(--text-main); overflow-x: hidden; }
+        body { background-color: #050505; color: var(--text-main); overflow-x: hidden; cursor: none; }
+        a, button, input, textarea, select { cursor: none; }
         a { text-decoration: none; color: inherit; transition: 0.3s; }
-        ul { list-style: none; }
+        ul { list-style: none; padding: 0; margin: 0; }
+        html { scroll-behavior: smooth; background-color: #000; scroll-padding-top: 100px; }
+
+        /* CURSEUR */
+        .cursor-dot { width: 8px; height: 8px; background-color: white; position: fixed; top: 0; left: 0; transform: translate(-50%, -50%); border-radius: 50%; z-index: 9999; pointer-events: none; box-shadow: 0 0 10px white; }
+        .cursor-outline { width: 40px; height: 40px; border: 2px solid var(--accent); position: fixed; top: 0; left: 0; transform: translate(-50%, -50%); border-radius: 50%; z-index: 9998; pointer-events: none; transition: width 0.2s, height 0.2s, background-color 0.2s; box-shadow: 0 0 20px rgba(224, 0, 91, 0.3); }
+        body.hovering .cursor-outline { width: 70px; height: 70px; background-color: rgba(224, 0, 91, 0.1); border-color: white; mix-blend-mode: screen; }
 
         /* FOND */
         .global-video-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; }
@@ -37,22 +44,23 @@
         .mobile-menu-overlay.active { transform: translateX(0); }
         .mobile-menu-overlay ul { display: flex; flex-direction: column; gap: 30px; text-align: center; }
         .mobile-menu-overlay a { font-family: 'Syne'; font-size: 2rem; color: white; text-transform: uppercase; }
-        .cta-btn { background: white; color: black; padding: 10px 25px; border-radius: 50px; font-weight: 700; font-size: 0.85rem; transition: 0.4s; border: 1px solid white; white-space: nowrap; }
-        .cta-btn:hover { background: var(--accent); border-color: var(--accent); color: white; box-shadow: 0 0 20px rgba(224, 0, 91, 0.6); transform: translateY(-2px); }
+        .cta-btn { background: white; color: black; padding: 10px 25px; border-radius: 50px; font-weight: 700; font-size: 0.85rem; transition: 0.4s; border: 1px solid white; white-space: nowrap; animation: pulseBtn 3s infinite; }
+        @keyframes pulseBtn { 0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); } }
+        .cta-btn:hover { background: var(--accent); border-color: var(--accent); color: white; box-shadow: 0 0 20px rgba(224, 0, 91, 0.6); transform: translateY(-2px); animation: none; }
 
-        /* ANIMATIONS */
+        /* ANIMATION TITRE */
         .text-glow-anim { background: linear-gradient(to right, #ffffff 20%, #e0005b 50%, #2D5BFF 80%, #ffffff 100%); background-size: 200% auto; color: #fff; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 5s linear infinite; }
         @keyframes shine { to { background-position: 200% center; } }
-
-        /* CATALOGUE CSS */
         .page-header { padding: 150px 5% 50px; text-align: center; }
-        .page-title { font-family: 'Syne'; font-size: 3.5rem; text-transform: uppercase; margin-bottom: 20px; }
-        .page-subtitle { color: #ccc; max-width: 800px; margin: 0 auto; font-size: 1.1rem; line-height: 1.6; }
+        .page-title { font-family: 'Syne'; font-size: 4rem; text-transform: uppercase; margin-bottom: 20px; }
+        .page-subtitle { color: #ccc; max-width: 800px; margin: 0 auto; font-size: 1.2rem; line-height: 1.6; }
 
+        /* FILTRES */
         #filters { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 40px; }
         .filter-btn { background: rgba(255,255,255,0.1); color: #ccc; border: 1px solid var(--glass-border); padding: 10px 20px; border-radius: 50px; cursor: pointer; transition: 0.3s; font-family: 'Space Grotesk'; text-transform: uppercase; font-weight: 600; font-size: 0.8rem; }
         .filter-btn:hover, .filter-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
 
+        /* GRILLE PRODUITS */
         #product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; padding: 0 5% 80px; }
         .product-card { background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 20px; overflow: hidden; transition: 0.4s; cursor: pointer; display: flex; flex-direction: column; }
         .product-card:hover { transform: translateY(-10px); border-color: var(--accent); box-shadow: 0 10px 30px rgba(224,0,91,0.2); }
@@ -60,9 +68,8 @@
         .product-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
         .product-card:hover .product-img { transform: scale(1.1); }
         
-        /* ICONE LOUPE */
         .zoom-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); background: rgba(0,0,0,0.7); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; items-center; justify-content: center; transition: 0.3s; opacity: 0; }
-        .product-img-wrapper:hover .zoom-icon { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        .product-card:hover .zoom-icon { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 
         .product-content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
         .product-title { font-family: 'Syne'; font-size: 1.3rem; margin-bottom: 10px; color: white; }
@@ -71,13 +78,12 @@
         .product-tag { background: rgba(224,0,91,0.2); color: var(--accent); padding: 5px 10px; border-radius: 5px; font-size: 0.75rem; font-weight: 700; }
         .view-details { color: var(--accent); font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; gap: 5px; }
 
-        /* MODALE DÉTAILS */
+        /* MODALE */
         #details-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); z-index: 2000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.4s; }
         #details-modal.active { opacity: 1; pointer-events: all; }
         .modal-content { background: #0a0a0a; border: 1px solid var(--glass-border); border-radius: 20px; width: 90%; max-width: 1100px; max-height: 90vh; overflow-y: auto; position: relative; padding: 40px; }
         .modal-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 2rem; cursor: pointer; z-index: 2001; }
         
-        /* GALERIE ACCORDÉON MODALE */
         .modal-gallery-wrapper { margin-bottom: 30px; }
         .tech-gallery { display: flex; width: 100%; height: 300px; gap: 10px; }
         .tech-item { flex: 1; border-radius: 15px; background-position: center; background-size: cover; background-repeat: no-repeat; transition: all 0.5s ease; filter: grayscale(100%) brightness(0.6); cursor: pointer; position: relative; border: 1px solid rgba(255,255,255,0.1); }
@@ -98,7 +104,7 @@
         #lightbox-img { max-width: 90vw; max-height: 90vh; border: 2px solid var(--accent); border-radius: 10px; }
 
         /* FORMULAIRE */
-        .contact-section { padding: 80px 5%; display: flex; justify-content: center; align-items: center; position: relative; border-top: 1px solid var(--glass-border); }
+        .contact-section { padding: 100px 5%; display: flex; justify-content: center; align-items: center; position: relative; border-top: 1px solid var(--glass-border); margin-top: 50px;}
         .glass-form-container { width: 100%; max-width: 1000px; background: rgba(10, 10, 10, 0.7); border: 1px solid var(--glass-border); border-radius: 30px; padding: 60px; position: relative; overflow: hidden; box-shadow: 0 20px 80px rgba(0,0,0,0.8); backdrop-filter: blur(30px); }
         .glass-form-container::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--primary), var(--accent)); }
         .form-header { text-align: center; margin-bottom: 50px; }
@@ -145,26 +151,28 @@
             .form-grid { grid-template-columns: 1fr; }
             .full-width { grid-column: span 1; }
             .glass-form-container { padding: 20px; }
+            .cursor-dot, .cursor-outline { display: none; }
+            body { cursor: auto; }
         }
     </style>
 </head>
 <body>
+
+    <div class="cursor-dot" data-cursor-dot></div>
+    <div class="cursor-outline" data-cursor-outline></div>
+
     <div class="global-video-container"><video autoplay muted loop playsinline><source src="https://www.prodjekt.fr/wp-content/uploads/2025/11/1121.mp4" type="video/mp4"></video></div>
     <div class="global-video-overlay"></div>
 
     <header>
         <a href="index.html" class="logo-wrapper"><img src="https://www.prodjekt.fr/wp-content/uploads/2025/11/Logo-Prodjekt-blanc.png" alt="Logo Prodjekt" class="logo-img"></a>
-        <a href="#contact" class="cta-btn">Demander un Devis</a>
+        <a href="index.html#contact" class="cta-btn">Échangeons sur votre projet</a>
         <div class="burger-menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
     </header>
 
-    <div class="mobile-menu-overlay" id="mobileMenu">
-        <div style="position: absolute; top: 20px; right: 20px; font-size: 2rem; color: white; cursor: pointer;" onclick="toggleMenu()"><i class="fas fa-times"></i></div>
-    </div>
-
     <div class="page-header">
         <h1 class="page-title text-glow-anim">Catalogue Scénique</h1>
-        <p class="page-subtitle">Explorez notre parc de structures.</p>
+        <p class="page-subtitle">Explorez notre parc de structures. Des scènes grandioses aux dômes immersifs.</p>
     </div>
 
     <div id="filters"></div>
@@ -186,7 +194,7 @@
             <div class="modal-info"><h3 id="modal-title"></h3><p id="modal-desc" style="color:#ccc; margin-bottom:20px;"></p></div>
             <div id="modal-gallery-container" class="modal-gallery-wrapper"></div>
             <ul id="modal-specs" class="specs-list"></ul>
-            <div style="text-align:center; margin-top:30px;"><a href="#contact" class="cta-btn" onclick="prefillContact()">Demander un devis pour ce produit</a></div>
+            <div style="text-align:center; margin-top:30px;"><a href="#contact" class="cta-btn" onclick="prefillContact()">Besoin de renseignements ?</a></div>
         </div>
     </div>
 
@@ -194,13 +202,9 @@
 
     <section id="contact" class="contact-section">
         <div class="glass-form-container">
-            <div class="form-header">
-                <h2 class="text-glow-anim">UNE QUESTION ? UN DEVIS ?</h2>
-                <p>Remplissez ce formulaire, notre bureau d'études vous répondra.</p>
-            </div>
+            <div class="form-header"><h2 class="text-glow-anim">Échangeons sur votre projet</h2><p>Dites-nous tout, nous reviendrons vers vous rapidement.</p></div>
             <form action="https://formsubmit.co/communication@prodjekt.fr" method="POST">
-                <input type="text" name="_honey" style="display:none">
-                <input type="hidden" name="_captcha" value="false">
+                <input type="text" name="_honey" style="display:none"><input type="hidden" name="_captcha" value="false">
                 <div class="form-grid">
                     <div class="input-group"><input type="text" name="Nom" id="nom" class="input-field" placeholder=" " required><label for="nom" class="input-label">Nom</label></div>
                     <div class="input-group"><input type="text" name="Prenom" id="prenom" class="input-field" placeholder=" " required><label for="prenom" class="input-label">Prénom</label></div>
@@ -222,28 +226,68 @@
 
     <footer>
         <div class="footer-grid">
-            <div class="footer-col"><img src="https://www.prodjekt.fr/wp-content/uploads/2025/11/Logo-Prodjekt-blanc.png" alt="PRODJEKT" class="footer-logo"><p>Partenaire technique de référence.</p></div>
-            <div class="footer-col"><h4>CONTACT</h4><ul class="contact-list"><li><i class="fas fa-phone-alt"></i> <a href="tel:0391190063">03 91 19 00 63</a></li><li><i class="fas fa-envelope"></i> <a href="mailto:welcome@prodjekt.fr">welcome@prodjekt.fr</a></li></ul></div>
-            <div class="footer-col"><h4>SUIVEZ-NOUS</h4><div class="social-links"><a href="https://www.facebook.com/prodjektevent/" target="_blank" class="social-btn"><i class="fab fa-facebook-f"></i></a><a href="https://www.instagram.com/prodjektevent/" target="_blank" class="social-btn"><i class="fab fa-instagram"></i></a><a href="https://fr.linkedin.com/company/prodjekt" target="_blank" class="social-btn"><i class="fab fa-linkedin-in"></i></a></div></div>
+            <div class="footer-col">
+                <img src="https://www.prodjekt.fr/wp-content/uploads/2025/11/Logo-Prodjekt-blanc.png" alt="PRODJEKT" class="footer-logo">
+                <p>Partenaire technique de référence pour l'événementiel en France. Sonorisation, éclairage, vidéo et structure.</p>
+            </div>
+            <div class="footer-col">
+                <h4>CONTACT</h4>
+                <ul class="contact-list">
+                    <li><i class="fas fa-phone-alt"></i> <a href="tel:0391190063">03 91 19 00 63</a></li>
+                    <li><i class="fas fa-envelope"></i> <a href="mailto:welcome@prodjekt.fr">welcome@prodjekt.fr</a></li>
+                    <li><i class="fas fa-map-marker-alt"></i> Hauts-de-France / Paris</li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>SUIVEZ-NOUS</h4>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/prodjektevent/" target="_blank" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/prodjektevent/" target="_blank" class="social-btn"><i class="fab fa-instagram"></i></a>
+                    <a href="https://fr.linkedin.com/company/prodjekt" target="_blank" class="social-btn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
         </div>
-        <div class="copyright">&copy; 2025 PRODJEKT. Tous droits réservés.</div>
+        <div class="copyright">
+            &copy; 2025 PRODJEKT. Tous droits réservés.
+        </div>
     </footer>
 
 <script>
     function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('active');}
 
+    // DATA PRODUITS (AVEC IMAGES DUPLIQUÉES POUR ACCORDEON)
     const products = [
-        { category: "Grande Scène", name: "Grande Scène (B100R Prolyte)", description: "Idéale pour les grands festivals.", surface: 240, resistance: 750, charge: 13, hauteur: 9.5, images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img144.jpg", "https://www.prodjekt.fr/wp-content/uploads/2020/03/Touquet-Music-Beach-Festival-2019.jpg", "https://www.prodjekt.fr/wp-content/uploads/2025/07/IMG_5665.jpg"] },
-        { category: "Grande Scène", name: "Alpha Stage 80 (Mobile)", description: "Solution mobile rapide.", surface: 82, resistance: 500, charge: 10, hauteur: 6, images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/IMG_7008.jpeg"] },
-        { category: "Arc-Roof", name: "Arc-Roof 14 x 11 HT", description: "Show spectaculaire.", surface: 154, resistance: 750, charge: 5, hauteur: 7.1, images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img174.jpg", "https://www.prodjekt.fr/wp-content/uploads/2025/07/IMG_6684.jpg", "https://www.prodjekt.fr/wp-content/uploads/2025/06/DSC_4079.jpg"] },
-        { category: "Arc-Roof", name: "Arc-Roof 10 x 8 HT", description: "Hauteur optimisée.", surface: 80, resistance: 750, charge: 5, hauteur: 4.1, images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img198.jpg"] },
-        { category: "Arc-Roof", name: "Arc-Roof 10 x 8", description: "Élégance standard.", surface: 80, resistance: 750, charge: 1.2, hauteur: 4.65, images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img204.jpg"] },
-        { category: "Arc-Roof", name: "Arc-Roof 8 x 6", description: "Compacte et polyvalente.", surface: 48, resistance: 750, charge: 1.6, hauteur: 3.65, images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img241.jpg"] },
-        { category: "Arc-Roof", name: "Arc-Roof 6 x 4", description: "Petit format.", surface: 24, resistance: 750, charge: 1.4, hauteur: 2.74, images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img263.jpg"] },
-        { category: "Arc-Roof", name: "Arc-Roof 4 x 4", description: "Régie ou accueil.", surface: 16, resistance: 750, charge: 2, hauteur: 2.74, images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img290.jpg"] },
-        { category: "Tunnels & Dômes", name: "Tunnel Roof", description: "Passerelles et entrées.", surface: 40, resistance: 0, charge: 1.5, hauteur: 4.2, images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img294.jpg"] },
+        { category: "Grande Scène", name: "Grande Scène (B100R Prolyte)", description: "Idéale pour les grands festivals.", surface: 240, resistance: 750, charge: 13, hauteur: 9.5, 
+            images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img144.jpg", "https://www.prodjekt.fr/wp-content/uploads/2020/03/Touquet-Music-Beach-Festival-2019.jpg", "https://www.prodjekt.fr/wp-content/uploads/2025/07/IMG_5665.jpg"] 
+        },
+        { category: "Grande Scène", name: "Alpha Stage 80 (Mobile)", description: "Solution mobile rapide.", surface: 82, resistance: 500, charge: 10, hauteur: 6, 
+            images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/IMG_7008.jpeg" , "https://www.prodjekt.fr/wp-content/uploads/2025/09/IMG_7150.jpg" , "https://www.prodjekt.fr/wp-content/uploads/2025/06/IMG_5404-1.jpg"] 
+        },
+        { category: "Arc-Roof", name: "Arc-Roof 14 x 11 HT", description: "Show spectaculaire.", surface: 154, resistance: 750, charge: 5, hauteur: 7.1, 
+            images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img174.jpg", "https://www.prodjekt.fr/wp-content/uploads/2025/07/IMG_6684.jpg", "https://www.prodjekt.fr/wp-content/uploads/2025/06/DSC_4079.jpg"] 
+        },
+        { category: "Arc-Roof", name: "Arc-Roof 10 x 8 HT", description: "Hauteur optimisée.", surface: 80, resistance: 750, charge: 5, hauteur: 4.1, 
+            images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img198.jpg"] 
+        },
+        { category: "Arc-Roof", name: "Arc-Roof 10 x 8", description: "Élégance standard.", surface: 80, resistance: 750, charge: 1.2, hauteur: 4.65, 
+            images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img204.jpg"] 
+        },
+        { category: "Arc-Roof", name: "Arc-Roof 8 x 6", description: "Compacte et polyvalente.", surface: 48, resistance: 750, charge: 1.6, hauteur: 3.65, 
+            images: ["https://www.prodjekt.fr/wp-content/uploads/2025/06/IMG_9607.jpg" , "https://www.prodjekt.fr/wp-content/uploads/2025/09/img241.jpg" , "https://www.prodjekt.fr/wp-content/uploads/2024/05/IMG-20240521-WA0007.jpg"] 
+        },
+        { category: "Arc-Roof", name: "Arc-Roof 6 x 4", description: "Petit format.", surface: 24, resistance: 750, charge: 1.4, hauteur: 2.74, 
+            images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img263.jpg"] 
+        },
+        { category: "Arc-Roof", name: "Arc-Roof 4 x 4", description: "Régie ou accueil.", surface: 16, resistance: 750, charge: 2, hauteur: 2.74, 
+            images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img290.jpg"] 
+        },
+        { category: "Tunnels & Dômes", name: "Tunnel Roof", description: "Passerelles et entrées.", surface: 40, resistance: 0, charge: 1.5, hauteur: 4.2, 
+            images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img294.jpg" , "https://www.prodjekt.fr/wp-content/uploads/2025/09/493214185_1267704675196783_3835023914266202788_n.jpg" , "https://www.prodjekt.fr/wp-content/uploads/2025/09/492948500_1267601548540429_8350337692759459506_n.jpg"] 
+        },
         { category: "Tunnels & Dômes", name: "Dômes (38, 68, 100 m²)", description: "Espaces réceptifs.", surface: 100, resistance: 0, charge: 0, hauteur: 0, images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/IMG_3876.jpg", "https://www.prodjekt.fr/wp-content/uploads/2025/09/img319.jpg", "https://www.prodjekt.fr/wp-content/uploads/2025/09/IMG_5062.png"] },
-        { category: "Tunnels & Dômes", name: "Dôme Géodésique", description: "Esthétique unique.", surface: 95, resistance: 0, charge: 0, hauteur: 5, images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img328.jpg"] }
+        { category: "Tunnels & Dômes", name: "Dôme Géodésique", description: "Esthétique unique.", surface: 95, resistance: 0, charge: 0, hauteur: 5, 
+            images: ["https://www.prodjekt.fr/wp-content/uploads/2025/09/img328.jpg"] 
+        }
     ];
 
     const grid = document.getElementById('product-grid');
@@ -262,8 +306,8 @@
         grid.innerHTML = filtered.map((p, idx) => `
             <div class="product-card" onclick="openModal('${p.name}')">
                 <div class="product-img-wrapper">
-                    <img src="${p.images[0]}" class="product-img" alt="${p.name}" onclick="event.stopPropagation(); openLightbox('${p.images[0]}')">
-                    <div class="zoom-icon" onclick="event.stopPropagation(); openLightbox('${p.images[0]}')"><i class="fas fa-search-plus"></i></div>
+                    <img src="${p.images[0]}" class="product-img" alt="${p.name}">
+                    <div class="zoom-icon"><i class="fas fa-eye"></i></div>
                 </div>
                 <div class="product-content">
                     <h4 class="product-title">${p.name}</h4>
@@ -284,24 +328,24 @@
         const galleryContainer = document.getElementById('modal-gallery-container');
         let galleryHTML = '<div class="tech-gallery">';
         
-        // Use all images from the array
+        // Utiliser les images disponibles
         const imgList = p.images && p.images.length > 0 ? p.images : [p.imageUrl];
         
-        imgList.forEach(imgSrc => { 
-            galleryHTML += `<div class="tech-item" style="background-image: url('${imgSrc}');" onclick="event.stopPropagation(); openLightbox('${imgSrc}')"></div>`; 
-        });
-        
-        // If only 1 image, replicate it to maintain accordion layout
-        if(imgList.length === 1) { 
-             galleryHTML = '<div class="tech-gallery">';
-             galleryHTML += `<div class="tech-item" style="background-image: url('${imgList[0]}');" onclick="event.stopPropagation(); openLightbox('${imgList[0]}')"></div>`;
-             galleryHTML += `<div class="tech-item" style="background-image: url('${imgList[0]}');" onclick="event.stopPropagation(); openLightbox('${imgList[0]}')"></div>`;
-             galleryHTML += `<div class="tech-item" style="background-image: url('${imgList[0]}');" onclick="event.stopPropagation(); openLightbox('${imgList[0]}')"></div>`;
-             galleryHTML += '</div>';
+        // Si une seule image, on la duplique 3 fois pour l'effet accordéon
+        if(imgList.length === 1) {
+            // On crée une liste avec 3 fois la même image
+            const tripleList = [imgList[0], imgList[0], imgList[0]];
+            tripleList.forEach(imgSrc => { 
+                galleryHTML += `<div class="tech-item" style="background-image: url('${imgSrc}');" onclick="event.stopPropagation(); openLightbox('${imgSrc}')"></div>`; 
+            });
         } else {
-            galleryHTML += '</div>'; // Close div if multiple images
+            // Sinon on affiche les différentes images
+            imgList.forEach(imgSrc => { 
+                galleryHTML += `<div class="tech-item" style="background-image: url('${imgSrc}');" onclick="event.stopPropagation(); openLightbox('${imgSrc}')"></div>`; 
+            });
         }
         
+        galleryHTML += '</div>';
         galleryContainer.innerHTML = galleryHTML;
 
         let specs = `<li><strong>Surface :</strong> ${p.surface} m²</li>`;
@@ -335,6 +379,21 @@
             options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#ccc' } }, x: { grid: { display: false }, ticks: { color: '#ccc' } } }, plugins: { legend: { display: false } } }
         });
     }
+
+    // CURSEUR
+    const cursorDot = document.querySelector('[data-cursor-dot]');
+    const cursorOutline = document.querySelector('[data-cursor-outline]');
+    window.addEventListener("mousemove", function (e) {
+        const posX = e.clientX; const posY = e.clientY;
+        cursorDot.style.left = `${posX}px`; cursorDot.style.top = `${posY}px`;
+        cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" });
+    });
+    const interactiveElements = document.querySelectorAll('a, button, .product-card, .filter-btn, .tech-item, select, input, textarea');
+    interactiveElements.forEach(el => {
+        el.addEventListener('mouseenter', () => { document.body.classList.add('hovering'); });
+        el.addEventListener('mouseleave', () => { document.body.classList.remove('hovering'); });
+    });
+
     renderFilters(); filterProducts('Tous'); updateChart('surface', document.querySelector('#chart-filters button'));
 </script>
 </body>
