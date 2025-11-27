@@ -12,26 +12,20 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        /* --- STYLE GLOBAL (IDENTIQUE ACCUEIL) --- */
+        /* --- STYLE GLOBAL --- */
         :root { --primary: #2D5BFF; --accent: #e0005b; --text-main: #ffffff; --text-muted: #cccccc; --glass: rgba(255, 255, 255, 0.05); --glass-border: rgba(255, 255, 255, 0.15); --footer-bg: rgba(10, 10, 10, 0.95); }
         * { margin: 0; padding: 0; box-sizing: border-box; outline: none; font-family: 'Space Grotesk', sans-serif; }
         body { background-color: #050505; color: var(--text-main); overflow-x: hidden; cursor: none; }
         a, button, input, textarea, select { cursor: none; }
         a { text-decoration: none; color: inherit; transition: 0.3s; }
         ul { list-style: none; padding: 0; margin: 0; }
-        html { scroll-behavior: smooth; background-color: #000; scroll-padding-top: 100px; }
 
-        /* CURSEUR */
-        .cursor-dot { width: 8px; height: 8px; background-color: white; position: fixed; top: 0; left: 0; transform: translate(-50%, -50%); border-radius: 50%; z-index: 9999; pointer-events: none; box-shadow: 0 0 10px white; }
-        .cursor-outline { width: 40px; height: 40px; border: 2px solid var(--accent); position: fixed; top: 0; left: 0; transform: translate(-50%, -50%); border-radius: 50%; z-index: 9998; pointer-events: none; transition: width 0.2s, height 0.2s, background-color 0.2s; box-shadow: 0 0 20px rgba(224, 0, 91, 0.3); }
-        body.hovering .cursor-outline { width: 70px; height: 70px; background-color: rgba(224, 0, 91, 0.1); border-color: white; mix-blend-mode: screen; }
-
-        /* FOND */
+        /* FOND VIDEO (RÉTABLI) */
         .global-video-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; }
         .global-video-container video { width: 100%; height: 100%; object-fit: cover; }
         .global-video-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 5, 5, 0.7); z-index: -9; }
 
-        /* HEADER */
+        /* HEADER & MENU (CORRIGÉ) */
         header { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 1200px; padding: 10px 30px; background: rgba(20, 20, 20, 0.6); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 100px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .logo-img { max-height: 45px; width: auto; display: block; }
         .desktop-nav ul { display: flex; gap: 30px; }
@@ -40,37 +34,36 @@
         .desktop-nav a::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0%; height: 2px; background: var(--accent); transition: 0.3s; }
         .desktop-nav a:hover::after { width: 100%; }
         .burger-menu-btn { display: none; font-size: 1.5rem; color: white; cursor: pointer; margin-left: 15px; }
-        .mobile-menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(10, 10, 10, 0.98); backdrop-filter: blur(15px); z-index: 1001; display: flex; flex-direction: column; justify-content: center; align-items: center; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .mobile-menu-overlay.active { transform: translateX(0); }
-        .mobile-menu-overlay ul { display: flex; flex-direction: column; gap: 30px; text-align: center; }
-        .mobile-menu-overlay a { font-family: 'Syne'; font-size: 2rem; color: white; text-transform: uppercase; }
+        
         .cta-btn { background: white; color: black; padding: 10px 25px; border-radius: 50px; font-weight: 700; font-size: 0.85rem; transition: 0.4s; border: 1px solid white; white-space: nowrap; animation: pulseBtn 3s infinite; }
         @keyframes pulseBtn { 0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); } }
         .cta-btn:hover { background: var(--accent); border-color: var(--accent); color: white; box-shadow: 0 0 20px rgba(224, 0, 91, 0.6); transform: translateY(-2px); animation: none; }
 
-        /* ANIMATION TITRE */
+        .mobile-menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(10, 10, 10, 0.98); backdrop-filter: blur(15px); z-index: 1001; display: flex; flex-direction: column; justify-content: center; align-items: center; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .mobile-menu-overlay.active { transform: translateX(0); }
+        .mobile-menu-overlay ul { display: flex; flex-direction: column; gap: 30px; text-align: center; }
+        .mobile-menu-overlay a { font-family: 'Syne'; font-size: 2rem; color: white; text-transform: uppercase; }
+
+        /* PAGE STYLE */
+        .page-header { padding: 150px 5% 50px; text-align: center; }
+        .page-title { font-family: 'Syne'; font-size: 3.5rem; text-transform: uppercase; margin-bottom: 20px; }
         .text-glow-anim { background: linear-gradient(to right, #ffffff 20%, #e0005b 50%, #2D5BFF 80%, #ffffff 100%); background-size: 200% auto; color: #fff; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 5s linear infinite; }
         @keyframes shine { to { background-position: 200% center; } }
-        .page-header { padding: 150px 5% 50px; text-align: center; }
-        .page-title { font-family: 'Syne'; font-size: 4rem; text-transform: uppercase; margin-bottom: 20px; }
-        .page-subtitle { color: #ccc; max-width: 800px; margin: 0 auto; font-size: 1.2rem; line-height: 1.6; }
+        .page-subtitle { color: #ccc; max-width: 800px; margin: 0 auto; font-size: 1.1rem; line-height: 1.6; }
 
-        /* FILTRES */
+        /* CATALOGUE */
         #filters { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 40px; }
         .filter-btn { background: rgba(255,255,255,0.1); color: #ccc; border: 1px solid var(--glass-border); padding: 10px 20px; border-radius: 50px; cursor: pointer; transition: 0.3s; font-family: 'Space Grotesk'; text-transform: uppercase; font-weight: 600; font-size: 0.8rem; }
         .filter-btn:hover, .filter-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
 
-        /* GRILLE PRODUITS */
         #product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; padding: 0 5% 80px; }
         .product-card { background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 20px; overflow: hidden; transition: 0.4s; cursor: pointer; display: flex; flex-direction: column; }
         .product-card:hover { transform: translateY(-10px); border-color: var(--accent); box-shadow: 0 10px 30px rgba(224,0,91,0.2); }
         .product-img-wrapper { position: relative; overflow: hidden; height: 220px; }
         .product-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
         .product-card:hover .product-img { transform: scale(1.1); }
-        
         .zoom-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); background: rgba(0,0,0,0.7); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; items-center; justify-content: center; transition: 0.3s; opacity: 0; }
         .product-card:hover .zoom-icon { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-
         .product-content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
         .product-title { font-family: 'Syne'; font-size: 1.3rem; margin-bottom: 10px; color: white; }
         .product-desc { font-size: 0.9rem; color: #999; margin-bottom: 20px; line-height: 1.5; flex-grow: 1; }
@@ -83,28 +76,22 @@
         #details-modal.active { opacity: 1; pointer-events: all; }
         .modal-content { background: #0a0a0a; border: 1px solid var(--glass-border); border-radius: 20px; width: 90%; max-width: 1100px; max-height: 90vh; overflow-y: auto; position: relative; padding: 40px; }
         .modal-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 2rem; cursor: pointer; z-index: 2001; }
-        
-        .modal-gallery-wrapper { margin-bottom: 30px; }
-        .tech-gallery { display: flex; width: 100%; height: 300px; gap: 10px; }
+        .tech-gallery { display: flex; width: 100%; height: 300px; gap: 10px; margin-bottom: 30px; }
         .tech-item { flex: 1; border-radius: 15px; background-position: center; background-size: cover; background-repeat: no-repeat; transition: all 0.5s ease; filter: grayscale(100%) brightness(0.6); cursor: pointer; position: relative; border: 1px solid rgba(255,255,255,0.1); }
         .tech-item:hover { flex: 4; filter: grayscale(0%) brightness(1.1); border-color: var(--accent); }
-
-        .modal-info h3 { font-family: 'Syne'; font-size: 2.5rem; margin-bottom: 10px; color: white; text-transform: uppercase; }
         .specs-list { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .specs-list li { color: #ccc; font-size: 0.95rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
         .specs-list li strong { color: white; }
 
-        /* COMPARATEUR */
+        /* CHART & LIGHTBOX */
         .chart-section { padding: 50px 10%; background: rgba(0,0,0,0.3); margin-bottom: 50px; }
         .chart-container { height: 400px; width: 100%; margin-top: 30px; background: rgba(255,255,255,0.02); border-radius: 20px; padding: 20px; }
-
-        /* LIGHTBOX */
         #img-lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; display: flex; justify-content: center; align-items: center; display: none; }
         #img-lightbox.active { display: flex; }
         #lightbox-img { max-width: 90vw; max-height: 90vh; border: 2px solid var(--accent); border-radius: 10px; }
 
         /* FORMULAIRE */
-        .contact-section { padding: 100px 5%; display: flex; justify-content: center; align-items: center; position: relative; border-top: 1px solid var(--glass-border); margin-top: 50px;}
+        .contact-section { padding: 80px 5%; display: flex; justify-content: center; align-items: center; position: relative; border-top: 1px solid var(--glass-border); }
         .glass-form-container { width: 100%; max-width: 1000px; background: rgba(10, 10, 10, 0.7); border: 1px solid var(--glass-border); border-radius: 30px; padding: 60px; position: relative; overflow: hidden; box-shadow: 0 20px 80px rgba(0,0,0,0.8); backdrop-filter: blur(30px); }
         .glass-form-container::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--primary), var(--accent)); }
         .form-header { text-align: center; margin-bottom: 50px; }
@@ -130,11 +117,15 @@
         .contact-list li { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px; }
         .contact-list li i { color: var(--accent); font-size: 1.1rem; }
         .contact-list li a { color: var(--text-muted); transition: 0.3s; }
-        .contact-list li a:hover { color: white; padding-left: 5px; }
         .social-links { display: flex; gap: 15px; justify-content: center; }
         .social-btn { width: 45px; height: 45px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; color: white; transition: 0.3s; }
         .social-btn:hover { background: var(--accent); border-color: var(--accent); transform: translateY(-3px); }
         .copyright { text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; font-size: 0.8rem; opacity: 0.6; }
+
+        /* CURSEUR CUSTOM */
+        .cursor-dot { width: 8px; height: 8px; background-color: white; position: fixed; top: 0; left: 0; transform: translate(-50%, -50%); border-radius: 50%; z-index: 9999; pointer-events: none; box-shadow: 0 0 10px white; }
+        .cursor-outline { width: 40px; height: 40px; border: 2px solid var(--accent); position: fixed; top: 0; left: 0; transform: translate(-50%, -50%); border-radius: 50%; z-index: 9998; pointer-events: none; transition: width 0.2s, height 0.2s, background-color 0.2s; box-shadow: 0 0 20px rgba(224, 0, 91, 0.3); }
+        body.hovering .cursor-outline { width: 70px; height: 70px; background-color: rgba(224, 0, 91, 0.1); border-color: white; mix-blend-mode: screen; }
 
         @media (max-width: 768px) {
             header { width: 100%; padding: 10px 15px; border-radius: 0; top: 0; background: rgba(10, 10, 10, 0.9); justify-content: space-between; }
@@ -166,7 +157,7 @@
 
     <header>
         <a href="index.html" class="logo-wrapper"><img src="https://www.prodjekt.fr/wp-content/uploads/2025/11/Logo-Prodjekt-blanc.png" alt="Logo Prodjekt" class="logo-img"></a>
-        <a href="index.html#contact" class="cta-btn">Échangeons sur votre projet</a>
+        <a href="#contact" class="cta-btn">Échangeons sur votre projet</a>
         <div class="burger-menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
     </header>
 
@@ -194,7 +185,7 @@
             <div class="modal-info"><h3 id="modal-title"></h3><p id="modal-desc" style="color:#ccc; margin-bottom:20px;"></p></div>
             <div id="modal-gallery-container" class="modal-gallery-wrapper"></div>
             <ul id="modal-specs" class="specs-list"></ul>
-            <div style="text-align:center; margin-top:30px;"><a href="#contact" class="cta-btn" onclick="prefillContact()">Besoin de renseignements ?</a></div>
+            <div style="text-align:center; margin-top:30px;"><a href="#contact" class="cta-btn" onclick="prefillContact()">Demander un devis pour ce produit</a></div>
         </div>
     </div>
 
@@ -209,7 +200,7 @@
                     <div class="input-group"><input type="text" name="Nom" id="nom" class="input-field" placeholder=" " required><label for="nom" class="input-label">Nom</label></div>
                     <div class="input-group"><input type="text" name="Prenom" id="prenom" class="input-field" placeholder=" " required><label for="prenom" class="input-label">Prénom</label></div>
                     <div class="input-group"><input type="text" name="Societe" id="societe" class="input-field" placeholder=" "><label for="societe" class="input-label">Société</label></div>
-                    <div class="input-group"><input type="email" name="Email" id="email" class="input-field" placeholder=" " required><label for="email" class="input-label">Email</label></div>
+                    <div class="input-group"><input type="email" name="Email" id="email" class="input-field" placeholder=" " required><label for="email" class="input-label">Email Professionnel</label></div>
                     <div class="input-group full-width">
                         <select name="Type_Evenement" id="type-event" class="input-field" required>
                             <option value="" disabled selected>Type d'événement</option><option value="Festival">Festival</option><option value="Concert">Concert</option><option value="Inauguration">Inauguration</option><option value="Sport">Evénement sportif</option><option value="Conférence">Conférence</option><option value="Anniversaire">Anniversaire</option><option value="Séminaire">Séminaire</option><option value="Voeux">Vœux</option><option value="Defile">Défilé de mode</option><option value="Autre">Autre</option>
@@ -226,30 +217,11 @@
 
     <footer>
         <div class="footer-grid">
-            <div class="footer-col">
-                <img src="https://www.prodjekt.fr/wp-content/uploads/2025/11/Logo-Prodjekt-blanc.png" alt="PRODJEKT" class="footer-logo">
-                <p>Partenaire technique de référence pour l'événementiel en France. Sonorisation, éclairage, vidéo et structure.</p>
-            </div>
-            <div class="footer-col">
-                <h4>CONTACT</h4>
-                <ul class="contact-list">
-                    <li><i class="fas fa-phone-alt"></i> <a href="tel:0391190063">03 91 19 00 63</a></li>
-                    <li><i class="fas fa-envelope"></i> <a href="mailto:welcome@prodjekt.fr">welcome@prodjekt.fr</a></li>
-                    <li><i class="fas fa-map-marker-alt"></i> Hauts-de-France / Paris</li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>SUIVEZ-NOUS</h4>
-                <div class="social-links">
-                    <a href="https://www.facebook.com/prodjektevent/" target="_blank" class="social-btn"><i class="fab fa-facebook-f"></i></a>
-                    <a href="https://www.instagram.com/prodjektevent/" target="_blank" class="social-btn"><i class="fab fa-instagram"></i></a>
-                    <a href="https://fr.linkedin.com/company/prodjekt" target="_blank" class="social-btn"><i class="fab fa-linkedin-in"></i></a>
-                </div>
-            </div>
+            <div class="footer-col"><img src="https://www.prodjekt.fr/wp-content/uploads/2025/11/Logo-Prodjekt-blanc.png" alt="PRODJEKT" class="footer-logo"><p>Partenaire technique de référence pour l'événementiel en France. Sonorisation, éclairage, vidéo et structure.</p></div>
+            <div class="footer-col"><h4>CONTACT</h4><ul class="contact-list"><li><i class="fas fa-phone-alt"></i> <a href="tel:0391190063">03 91 19 00 63</a></li><li><i class="fas fa-envelope"></i> <a href="mailto:welcome@prodjekt.fr">welcome@prodjekt.fr</a></li><li><i class="fas fa-map-marker-alt"></i> Hauts-de-France / Paris</li></ul></div>
+            <div class="footer-col"><h4>SUIVEZ-NOUS</h4><div class="social-links"><a href="https://www.facebook.com/prodjektevent/" target="_blank" class="social-btn"><i class="fab fa-facebook-f"></i></a><a href="https://www.instagram.com/prodjektevent/" target="_blank" class="social-btn"><i class="fab fa-instagram"></i></a><a href="https://fr.linkedin.com/company/prodjekt" target="_blank" class="social-btn"><i class="fab fa-linkedin-in"></i></a></div></div>
         </div>
-        <div class="copyright">
-            &copy; 2025 PRODJEKT. Tous droits réservés.
-        </div>
+        <div class="copyright">&copy; 2025 PRODJEKT. Tous droits réservés.</div>
     </footer>
 
 <script>
@@ -327,25 +299,22 @@
         
         const galleryContainer = document.getElementById('modal-gallery-container');
         let galleryHTML = '<div class="tech-gallery">';
-        
-        // Utiliser les images disponibles
         const imgList = p.images && p.images.length > 0 ? p.images : [p.imageUrl];
         
-        // Si une seule image, on la duplique 3 fois pour l'effet accordéon
-        if(imgList.length === 1) {
-            // On crée une liste avec 3 fois la même image
-            const tripleList = [imgList[0], imgList[0], imgList[0]];
-            tripleList.forEach(imgSrc => { 
-                galleryHTML += `<div class="tech-item" style="background-image: url('${imgSrc}');" onclick="event.stopPropagation(); openLightbox('${imgSrc}')"></div>`; 
-            });
+        imgList.forEach(imgSrc => { 
+            galleryHTML += `<div class="tech-item" style="background-image: url('${imgSrc}');" onclick="event.stopPropagation(); openLightbox('${imgSrc}')"></div>`; 
+        });
+        
+        if(imgList.length === 1) { 
+             galleryHTML = '<div class="tech-gallery">';
+             galleryHTML += `<div class="tech-item" style="background-image: url('${imgList[0]}');" onclick="event.stopPropagation(); openLightbox('${imgList[0]}')"></div>`;
+             galleryHTML += `<div class="tech-item" style="background-image: url('${imgList[0]}');" onclick="event.stopPropagation(); openLightbox('${imgList[0]}')"></div>`;
+             galleryHTML += `<div class="tech-item" style="background-image: url('${imgList[0]}');" onclick="event.stopPropagation(); openLightbox('${imgList[0]}')"></div>`;
+             galleryHTML += '</div>';
         } else {
-            // Sinon on affiche les différentes images
-            imgList.forEach(imgSrc => { 
-                galleryHTML += `<div class="tech-item" style="background-image: url('${imgSrc}');" onclick="event.stopPropagation(); openLightbox('${imgSrc}')"></div>`; 
-            });
+            galleryHTML += '</div>';
         }
         
-        galleryHTML += '</div>';
         galleryContainer.innerHTML = galleryHTML;
 
         let specs = `<li><strong>Surface :</strong> ${p.surface} m²</li>`;
