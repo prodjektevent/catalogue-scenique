@@ -14,20 +14,25 @@
     <style>
         /* --- STYLE GLOBAL --- */
         :root { --primary: #2D5BFF; --accent: #e0005b; --text-main: #ffffff; --text-muted: #cccccc; --glass: rgba(255, 255, 255, 0.05); --glass-border: rgba(255, 255, 255, 0.15); --footer-bg: rgba(10, 10, 10, 0.95); }
+        
+        /* RESET & FOND TRANSPARENT (POUR VOIR LA VIDÉO) */
         * { margin: 0; padding: 0; box-sizing: border-box; outline: none; font-family: 'Space Grotesk', sans-serif; }
-        body { background-color: #050505; color: var(--text-main); overflow-x: hidden; cursor: none; }
-        a, button, input, textarea, select { cursor: none; }
+        
+        /* IMPORTANT : Fond transparent pour voir la vidéo en dessous */
+        body { background-color: transparent; color: var(--text-main); overflow-x: hidden; cursor: none; }
+        html { scroll-behavior: smooth; background-color: #000; scroll-padding-top: 100px; }
+        
+        a, button, input, textarea, select, label { cursor: none; }
         a { text-decoration: none; color: inherit; transition: 0.3s; }
         ul { list-style: none; padding: 0; margin: 0; }
-        html { scroll-behavior: smooth; background-color: #000; scroll-padding-top: 100px; }
 
         /* CURSEUR */
         .cursor-dot { width: 8px; height: 8px; background-color: white; position: fixed; top: 0; left: 0; transform: translate(-50%, -50%); border-radius: 50%; z-index: 9999; pointer-events: none; box-shadow: 0 0 10px white; }
         .cursor-outline { width: 40px; height: 40px; border: 2px solid var(--accent); position: fixed; top: 0; left: 0; transform: translate(-50%, -50%); border-radius: 50%; z-index: 9998; pointer-events: none; transition: width 0.2s, height 0.2s, background-color 0.2s; box-shadow: 0 0 20px rgba(224, 0, 91, 0.3); }
         body.hovering .cursor-outline { width: 70px; height: 70px; background-color: rgba(224, 0, 91, 0.1); border-color: white; mix-blend-mode: screen; }
 
-        /* FOND VIDEO */
-        .global-video-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; }
+        /* FOND VIDEO (FIXED) */
+        .global-video-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; overflow: hidden; }
         .global-video-container video { width: 100%; height: 100%; object-fit: cover; }
         .global-video-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 5, 5, 0.7); z-index: -9; }
 
@@ -105,26 +110,30 @@
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
         .full-width { grid-column: span 2; }
         .input-group { position: relative; margin-bottom: 10px; }
-        .input-field { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid #444; padding: 18px 20px; border-radius: 12px; color: white; font-size: 1rem; transition: 0.3s; z-index: 50; position: relative; }
         
-        /* CORRECTION INPUT DATE */
+        /* INPUT & DATE FIX */
+        .input-field { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid #444; padding: 18px 20px; border-radius: 12px; color: white; font-size: 1rem; transition: 0.3s; z-index: 50; position: relative; }
+        input[type="date"] { color: white; }
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; z-index: 51; }
         
         .input-field:focus { border-color: var(--accent); background: rgba(224,0,91,0.05); box-shadow: 0 0 15px rgba(224,0,91,0.2); }
         .input-label { position: absolute; left: 20px; top: 18px; color: #888; pointer-events: none; transition: 0.3s; font-size: 0.9rem; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; }
-        .input-field:focus ~ .input-label, .input-field:not(:placeholder-shown) ~ .input-label { top: -12px; left: 10px; font-size: 0.75rem; color: var(--accent); background: #000; padding: 0 5px; border-radius: 3px; }
+        .input-field:focus ~ .input-label, 
+        .input-field:not(:placeholder-shown) ~ .input-label,
+        input[type="date"] ~ .input-label { top: -12px; left: 10px; font-size: 0.75rem; color: var(--accent); background: #000; padding: 0 5px; border-radius: 3px; }
+        
         textarea.input-field { resize: vertical; min-height: 150px; }
         select.input-field { appearance: none; color: #ccc; cursor: pointer; }
         select.input-field option { background: #111; color: white; padding: 10px; }
-        .submit-btn { width: 100%; padding: 20px; margin-top: 20px; background: linear-gradient(45deg, var(--primary), var(--accent)); border: none; border-radius: 12px; color: white; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: 0.3s; z-index: 50; position: relative; cursor: pointer; }
+        .submit-btn { width: 100%; padding: 20px; margin-top: 20px; background: linear-gradient(45deg, var(--primary), var(--accent)); border: none; border-radius: 12px; color: white; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: 0.3s; z-index: 50; position: relative; }
         .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(224, 0, 91, 0.4); }
 
-        /* CASES A COCHER */
-        .checkbox-group { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px; margin-top: 20px; }
-        .checkbox-label { display: flex; align-items: center; gap: 10px; color: #ccc; font-size: 0.9rem; cursor: pointer; }
-        .checkbox-input { appearance: none; width: 20px; height: 20px; border: 2px solid #555; border-radius: 4px; background: rgba(0,0,0,0.5); cursor: pointer; position: relative; }
+        /* CHECKBOXES */
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px; margin-top: 10px; }
+        .checkbox-label { display: flex; align-items: center; gap: 10px; color: #ccc; font-size: 0.9rem; cursor: pointer; z-index: 50; position: relative; }
+        .checkbox-input { appearance: none; width: 20px; height: 20px; border: 2px solid #555; border-radius: 4px; background: rgba(0,0,0,0.5); cursor: pointer; position: relative; display: grid; place-content: center; }
         .checkbox-input:checked { background: var(--accent); border-color: var(--accent); }
-        .checkbox-input:checked::after { content: '\f00c'; font-family: 'Font Awesome 5 Free'; font-weight: 900; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 0.8rem; }
+        .checkbox-input:checked::after { content: '\f00c'; font-family: 'Font Awesome 5 Free'; font-weight: 900; color: white; font-size: 0.8rem; }
 
         /* FOOTER */
         footer { border-top: 1px solid var(--glass-border); padding: 80px 10% 40px; background: var(--footer-bg); color: var(--text-muted); font-size: 0.95rem; text-align: center; }
@@ -134,12 +143,12 @@
         .contact-list li { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px; }
         .contact-list li i { color: var(--accent); font-size: 1.1rem; }
         .contact-list li a { color: var(--text-muted); transition: 0.3s; }
+        .contact-list li a:hover { color: white; padding-left: 5px; }
         .social-links { display: flex; gap: 15px; justify-content: center; }
         .social-btn { width: 45px; height: 45px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; color: white; transition: 0.3s; }
         .social-btn:hover { background: var(--accent); border-color: var(--accent); transform: translateY(-3px); }
         .copyright { text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; font-size: 0.8rem; opacity: 0.6; }
 
-        /* MEDIA QUERIES MOBILE */
         @media (max-width: 768px) {
             header { width: 100%; padding: 10px 15px; border-radius: 0; top: 0; background: rgba(10, 10, 10, 0.9); justify-content: space-between; }
             .logo-img { max-height: 30px; }
@@ -218,17 +227,20 @@
                     <div class="input-group"><input type="text" name="Nom" id="nom" class="input-field" placeholder=" " required><label for="nom" class="input-label">Nom</label></div>
                     <div class="input-group"><input type="text" name="Prenom" id="prenom" class="input-field" placeholder=" " required><label for="prenom" class="input-label">Prénom</label></div>
                     <div class="input-group"><input type="text" name="Societe" id="societe" class="input-field" placeholder=" "><label for="societe" class="input-label">Société</label></div>
-                    <div class="input-group"><input type="email" name="Email" id="email" class="input-field" placeholder=" " required><label for="email" class="input-label">Email</label></div>
-                    <div class="input-group full-width">
-                        <select name="Type_Evenement" id="type-event" class="input-field" required>
-                            <option value="" disabled selected>Type d'événement</option><option value="Festival">Festival</option><option value="Concert">Concert</option><option value="Inauguration">Inauguration</option><option value="Sport">Evénement sportif</option><option value="Conférence">Conférence</option><option value="Anniversaire">Anniversaire</option><option value="Séminaire">Séminaire</option><option value="Voeux">Vœux</option><option value="Defile">Défilé de mode</option><option value="Autre">Autre</option>
-                        </select>
-                    </div>
-                    <div class="input-group"><input type="tel" name="Telephone" id="tel" class="input-field" placeholder=" "><label for="tel" class="input-label">Téléphone</label></div>
-                    <div class="input-group"><input type="text" name="Date" id="date" class="input-field" placeholder=" " onfocus="(this.type='date')" onblur="(this.type='text')"><label for="date" class="input-label">Date de l'événement</label></div>
+                    <div class="input-group"><input type="email" name="Email" id="email" class="input-field" placeholder=" " required><label for="email" class="input-label">Email Professionnel</label></div>
                     
                     <div class="input-group full-width">
-                        <p style="color:#ccc; margin-bottom:15px; font-weight:bold;">J'ai besoin de :</p>
+                        <select name="Type_Evenement" id="type-event" class="input-field" required>
+                            <option value="" disabled selected>Type d'événement</option><option value="Festival">Festival</option><option value="Concert">Concert</option><option value="Inauguration">Inauguration</option><option value="Sport">Evénement sportif</option><option value="Conférence">Conférence</option><option value="Anniversaire">Anniversaire</option><option value="Séminaire">Séminaire</option><option value="Voeux">Voeux</option><option value="Defile">Défilé de mode</option><option value="Autre">Autre</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group"><input type="tel" name="Telephone" id="tel" class="input-field" placeholder=" "><label for="tel" class="input-label">Téléphone</label></div>
+                    
+                    <div class="input-group"><input type="date" name="Date" id="date" class="input-field" required><label for="date" class="input-label">Date de l'événement</label></div>
+                    
+                    <div class="input-group full-width">
+                        <p style="color:#ccc; margin-bottom:15px; font-weight:bold; font-size:0.9rem;">J'ai besoin de :</p>
                         <div class="checkbox-group">
                             <label class="checkbox-label"><input type="checkbox" name="Besoin[]" value="Sonorisation" class="checkbox-input"> Sonorisation</label>
                             <label class="checkbox-label"><input type="checkbox" name="Besoin[]" value="Lumière" class="checkbox-input"> Lumière</label>
@@ -250,6 +262,8 @@
         </div>
         <div class="copyright">&copy; 2025 PRODJEKT. Tous droits réservés.</div>
     </footer>
+
+    <div id="img-lightbox" onclick="closeLightbox()"><img id="lightbox-img" src="" alt=""></div>
 
 <script>
     function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('active');}
